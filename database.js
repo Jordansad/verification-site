@@ -2,7 +2,8 @@ const Database = require('better-sqlite3');
 const bcrypt = require('bcryptjs');
 const path = require('path');
 
-const db = new Database(path.join(__dirname, 'verification.db'));
+const DATA_DIR = process.env.DATA_DIR || __dirname;
+const db = new Database(path.join(DATA_DIR, 'verification.db'));
 db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
 
