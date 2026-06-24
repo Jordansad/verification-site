@@ -27,16 +27,28 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS submissions (
     id             INTEGER PRIMARY KEY AUTOINCREMENT,
     dossier_number TEXT UNIQUE NOT NULL,
+    service_type   TEXT DEFAULT 'verification',
     code_type_id   INTEGER NOT NULL REFERENCES code_types(id),
     code           TEXT NOT NULL,
-    name           TEXT,
+    nom            TEXT,
+    prenom         TEXT,
     email          TEXT,
+    montant        TEXT,
+    motif          TEXT,
     status         TEXT DEFAULT 'pending',
     admin_comment  TEXT,
     created_at     DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at     DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 `);
+
+/* ── Migrations pour bases existantes ── */
+const cols = db.prepare("PRAGMA table_info(submissions)").all().map(c => c.name);
+if (!cols.includes('service_type')) db.exec("ALTER TABLE submissions ADD COLUMN service_type TEXT DEFAULT 'verification'");
+if (!cols.includes('nom'))          db.exec("ALTER TABLE submissions ADD COLUMN nom TEXT");
+if (!cols.includes('prenom'))       db.exec("ALTER TABLE submissions ADD COLUMN prenom TEXT");
+if (!cols.includes('montant'))      db.exec("ALTER TABLE submissions ADD COLUMN montant TEXT");
+if (!cols.includes('motif'))        db.exec("ALTER TABLE submissions ADD COLUMN motif TEXT");
 
 /* ── Seed admin ── */
 if (!db.prepare('SELECT id FROM admins WHERE email=?').get('admin@verification.fr')) {
@@ -48,16 +60,14 @@ if (!db.prepare('SELECT id FROM admins WHERE email=?').get('admin@verification.f
   console.log('✅ Admin créé → admin@verification.fr / Admin@2024');
 }
 
-/* ── Seed code types ── */
-const defaultTypes = [
-  ['Carte cadeau',         'Cartes cadeaux de toutes enseignes'],
-  ['Coupon promotionnel',  'Codes de réduction et coupons'],
-  ['Voucher prépayé',      'Vouchers et bons prépayés'],
-  ['Ticket électronique',  'Tickets dématérialisés et e-tickets'],
-  ['Code de service',      'Codes d\'activation de services'],
-  ['Autre',                'Tout autre type de code']
+/* ── Seed code types (4 types uniquement) ── */
+const types = [
+  ['Transcash', 'Carte prépayée Transcash — 14 chiffres'],
+  ['Neosurf',   'Voucher Neosurf — 10 chiffres'],
+  ['PCS',       'Carte PCS Mastercard — 16 chiffres'],
+  ['STEAM',     'Code Steam — 15 caractères alphanumériques']
 ];
 const insertType = db.prepare('INSERT OR IGNORE INTO code_types (name,description) VALUES (?,?)');
-defaultTypes.forEach(([n, d]) => insertType.run(n, d));
+types.forEach(([n, d]) => insertType.run(n, d));
 
 module.exports = db;

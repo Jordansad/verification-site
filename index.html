@@ -3,243 +3,331 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VériCode — Plateforme de vérification de codes</title>
+<title>VériCode — Vérification & Remboursement</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   * { font-family: 'Inter', sans-serif; }
-  :root { --navy: #0F2557; --gold: #C9A84C; }
-  .bg-navy { background-color: #0F2557; }
+  .bg-navy  { background-color: #0F2557; }
   .text-navy { color: #0F2557; }
   .text-gold { color: #C9A84C; }
-  .border-gold { border-color: #C9A84C; }
-  .ring-gold:focus { outline: none; box-shadow: 0 0 0 3px rgba(201,168,76,0.3); }
 
   /* Hero gradient */
-  .hero-gradient {
-    background: linear-gradient(135deg, #0A1A3D 0%, #0F2557 50%, #162E68 100%);
-  }
+  .hero-bg { background: linear-gradient(135deg, #0A1A3D 0%, #0F2557 60%, #162E68 100%); }
 
-  /* Status badges */
-  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; }
-  .badge-pending    { background: #FEF3C7; color: #92400E; }
-  .badge-processing { background: #DBEAFE; color: #1E40AF; }
-  .badge-valid      { background: #D1FAE5; color: #065F46; }
-  .badge-invalid    { background: #FEE2E2; color: #991B1B; }
-  .badge-used       { background: #FFEDD5; color: #9A3412; }
-  .badge-expired    { background: #F3F4F6; color: #374151; }
-  .badge-completed  { background: #CCFBF1; color: #134E4A; }
-
-  /* Smooth transitions */
-  .fade-in { animation: fadeIn 0.4s ease; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-
-  /* Button */
-  .btn-gold {
-    background: linear-gradient(135deg, #C9A84C, #E5C060);
-    color: #0F2557;
-    font-weight: 700;
-    transition: all 0.2s;
-  }
-  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(201,168,76,0.35); }
-  .btn-gold:active { transform: translateY(0); }
+  /* Buttons */
+  .btn-gold { background: linear-gradient(135deg,#C9A84C,#E5C060); color:#0F2557; font-weight:700; transition:all .2s; }
+  .btn-gold:hover { transform:translateY(-1px); box-shadow:0 8px 20px rgba(201,168,76,.35); }
+  .btn-navy { background:#0F2557; color:white; font-weight:700; transition:all .2s; }
+  .btn-navy:hover { background:#162E68; transform:translateY(-1px); }
 
   /* Input */
-  .input-field {
-    width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #E5E7EB;
-    border-radius: 10px;
-    font-size: 15px;
-    transition: border-color 0.2s;
+  .inp { width:100%; padding:11px 14px; border:2px solid #E5E7EB; border-radius:10px; font-size:14px; transition:border-color .2s; background:white; }
+  .inp:focus { outline:none; border-color:#C9A84C; box-shadow:0 0 0 3px rgba(201,168,76,.15); }
+  select.inp { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; background-size:16px; padding-right:38px; }
+
+  /* Code boxes */
+  .code-box {
+    width: 38px; height: 48px;
+    border: 2px solid #D1D5DB;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    transition: border-color .15s, box-shadow .15s;
     background: white;
+    color: #0F2557;
+    text-transform: uppercase;
   }
-  .input-field:focus { outline: none; border-color: #C9A84C; box-shadow: 0 0 0 3px rgba(201,168,76,0.15); }
+  .code-box:focus { outline:none; border-color:#C9A84C; box-shadow:0 0 0 3px rgba(201,168,76,.2); }
+  .code-box.filled { border-color:#0F2557; background:#F8FAFF; }
+  .code-box.masked { color:transparent; text-shadow: 0 0 8px #0F2557; }
 
-  /* Step indicators */
-  .step-dot { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+  /* Separator */
+  .code-sep { color:#9CA3AF; font-size:20px; font-weight:300; padding:0 4px; user-select:none; }
 
-  /* Nav active link */
-  .nav-active { color: #C9A84C !important; border-bottom: 2px solid #C9A84C; }
+  /* Status badges */
+  .badge { display:inline-flex; align-items:center; gap:5px; padding:4px 12px; border-radius:999px; font-size:12px; font-weight:600; }
+  .badge-pending    { background:#FEF3C7; color:#92400E; }
+  .badge-processing { background:#DBEAFE; color:#1E40AF; }
+  .badge-valid      { background:#D1FAE5; color:#065F46; }
+  .badge-invalid    { background:#FEE2E2; color:#991B1B; }
+  .badge-used       { background:#FFEDD5; color:#9A3412; }
+  .badge-expired    { background:#F3F4F6; color:#374151; }
+  .badge-completed  { background:#CCFBF1; color:#134E4A; }
+  .badge-verification  { background:#EDE9FE; color:#5B21B6; }
+  .badge-remboursement { background:#FCE7F3; color:#9D174D; }
 
-  /* Pulse dot for "En attente" */
-  .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; animation: pulse 1.5s infinite; }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  /* Animations */
+  .fade-in { animation:fi .35s ease; }
+  @keyframes fi { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+
+  /* Service cards hover */
+  .service-card { transition:all .25s; cursor:pointer; }
+  .service-card:hover { transform:translateY(-4px); box-shadow:0 20px 40px rgba(0,0,0,.12); }
+  .service-card.selected { border-color:#C9A84C !important; box-shadow:0 0 0 3px rgba(201,168,76,.25); }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
 
-<!-- ═══════════════════════ NAVIGATION ═══════════════════════ -->
+<!-- ════════════════ NAV ════════════════ -->
 <nav class="bg-navy fixed w-full top-0 z-50 shadow-lg">
-  <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg,#C9A84C,#E5C060)">
-        <svg width="20" height="20" fill="none" stroke="#0F2557" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+  <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+    <button onclick="showView('landing')" class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#C9A84C,#E5C060)">
+        <svg width="16" height="16" fill="none" stroke="#0F2557" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
       </div>
-      <span class="text-white font-bold text-lg tracking-tight">Véri<span class="text-gold">Code</span></span>
-    </div>
+      <span class="text-white font-bold text-lg">Véri<span class="text-gold">Code</span></span>
+    </button>
     <div class="flex items-center gap-1">
-      <button onclick="showView('submit')" id="nav-submit"
-        class="nav-active text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-white/10 transition-colors">
-        Soumettre un code
+      <button onclick="showView('landing')" id="nav-landing"
+        class="text-white text-sm font-medium px-3 py-2 rounded-lg hover:bg-white/10 transition-colors">
+        Accueil
       </button>
       <button onclick="showView('track')" id="nav-track"
-        class="text-gray-300 text-sm font-medium px-4 py-2 rounded-lg hover:bg-white/10 transition-colors">
+        class="text-gray-300 text-sm font-medium px-3 py-2 rounded-lg hover:bg-white/10 transition-colors">
         Suivre ma demande
       </button>
-      <a href="admin.html"
-        class="ml-3 text-xs text-gray-400 hover:text-gold transition-colors px-3 py-2 rounded-lg hover:bg-white/5">
-        Administration →
+      <a href="admin.html" class="ml-2 text-xs text-gray-400 hover:text-gold transition-colors px-3 py-2 rounded-lg hover:bg-white/5">
+        Admin →
       </a>
     </div>
   </div>
 </nav>
 
-<!-- ═══════════════════════ HERO ═══════════════════════ -->
-<section class="hero-gradient pt-28 pb-16">
-  <div class="max-w-5xl mx-auto px-4 text-center">
-    <div class="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-2 mb-6">
-      <div class="w-2 h-2 bg-green-400 rounded-full"></div>
-      <span class="text-white/80 text-sm">Service de vérification disponible</span>
+<!-- ════════════════ HERO ════════════════ -->
+<section class="hero-bg pt-28 pb-14">
+  <div class="max-w-4xl mx-auto px-4 text-center">
+    <div class="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-1.5 mb-5">
+      <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+      <span class="text-white/80 text-sm">Service disponible 24h/24</span>
     </div>
-    <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
-      Vérifiez vos codes<br><span class="text-gold">en toute confiance</span>
+    <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-3 leading-tight">
+      Vérification & <span class="text-gold">Remboursement</span>
     </h1>
-    <p class="text-white/70 text-lg max-w-xl mx-auto">
-      Soumettez votre code et notre équipe le vérifie manuellement. Résultat disponible sous quelques heures.
+    <p class="text-white/65 text-lg max-w-lg mx-auto">
+      Plateforme sécurisée pour vérifier vos codes prépayés ou demander un remboursement.
     </p>
   </div>
 </section>
 
-<!-- ═══════════════════════ MAIN CONTENT ═══════════════════════ -->
-<main class="max-w-2xl mx-auto px-4 -mt-6 pb-20">
+<!-- ════════════════ MAIN ════════════════ -->
+<main class="max-w-3xl mx-auto px-4 -mt-5 pb-24">
 
-  <!-- ── SUBMIT VIEW ── -->
-  <div id="view-submit" class="fade-in">
+  <!-- ── LANDING ── -->
+  <div id="view-landing" class="fade-in">
+    <p class="text-center text-gray-500 text-sm font-medium mb-5 uppercase tracking-wider">Que souhaitez-vous faire ?</p>
+    <div class="grid md:grid-cols-2 gap-5">
 
-    <!-- Submit form card -->
-    <div id="submit-form-card" class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-      <div class="flex items-center gap-3 mb-8">
-        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(201,168,76,0.12)">
-          <svg width="20" height="20" fill="none" stroke="#C9A84C" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      <!-- Vérification -->
+      <div class="service-card bg-white rounded-2xl p-7 border-2 border-gray-100 shadow-md"
+           onclick="startService('verification')">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+             style="background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(229,192,96,.15))">
+          <svg width="28" height="28" fill="none" stroke="#C9A84C" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
         </div>
+        <h2 class="text-xl font-bold text-navy mb-2">Vérification de code</h2>
+        <p class="text-gray-500 text-sm mb-6 leading-relaxed">
+          Vérifiez la validité de votre code prépayé (Transcash, Neosurf, PCS, Steam). Résultat disponible sous peu.
+        </p>
+        <button class="btn-gold w-full py-3 rounded-xl text-sm">
+          Vérifier mon code →
+        </button>
+      </div>
+
+      <!-- Remboursement -->
+      <div class="service-card bg-white rounded-2xl p-7 border-2 border-gray-100 shadow-md"
+           onclick="startService('remboursement')">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+             style="background:linear-gradient(135deg,rgba(15,37,87,.08),rgba(22,46,104,.08))">
+          <svg width="28" height="28" fill="none" stroke="#0F2557" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+          </svg>
+        </div>
+        <h2 class="text-xl font-bold text-navy mb-2">Remboursement</h2>
+        <p class="text-gray-500 text-sm mb-6 leading-relaxed">
+          Demandez le remboursement d'un code non fonctionnel ou déjà utilisé. Notre équipe traitera votre demande.
+        </p>
+        <button class="btn-navy w-full py-3 rounded-xl text-sm">
+          Demander un remboursement →
+        </button>
+      </div>
+    </div>
+
+    <!-- How it works -->
+    <div class="mt-12 bg-white rounded-2xl p-8 border border-gray-100 shadow-sm">
+      <h3 class="text-center font-bold text-navy mb-8">Comment ça fonctionne ?</h3>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="flex gap-4">
+          <div class="w-10 h-10 rounded-xl shrink-0 flex items-center justify-center font-extrabold text-gold" style="background:rgba(201,168,76,.12)">1</div>
+          <div>
+            <h4 class="font-bold text-navy mb-1">Soumettez votre demande</h4>
+            <p class="text-gray-500 text-sm">Choisissez le service, renseignez vos informations et saisissez votre code. Un numéro de dossier vous est attribué.</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <div class="w-10 h-10 rounded-xl shrink-0 flex items-center justify-center font-extrabold text-green-700" style="background:rgba(6,95,70,.08)">2</div>
+          <div>
+            <h4 class="font-bold text-navy mb-1">Consultez le résultat</h4>
+            <p class="text-gray-500 text-sm">Revenez sur "Suivre ma demande" avec votre numéro de dossier pour voir le statut et les commentaires.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FORM ── -->
+  <div id="view-form" class="hidden fade-in">
+
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2 mb-5">
+      <button onclick="showView('landing')" class="text-sm text-gray-400 hover:text-navy transition-colors flex items-center gap-1">
+        ← Accueil
+      </button>
+      <span class="text-gray-300">/</span>
+      <span id="breadcrumb-label" class="text-sm font-semibold text-navy"></span>
+    </div>
+
+    <!-- Form card -->
+    <div id="form-card" class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+      <!-- Header -->
+      <div class="flex items-center gap-3 mb-8">
+        <div id="form-icon" class="w-11 h-11 rounded-xl flex items-center justify-center"></div>
         <div>
-          <h2 class="text-xl font-bold text-navy">Soumettre un code</h2>
-          <p class="text-sm text-gray-500">Un numéro de dossier vous sera attribué</p>
+          <h2 id="form-title" class="text-xl font-bold text-navy"></h2>
+          <p id="form-subtitle" class="text-sm text-gray-400"></p>
         </div>
       </div>
 
       <div class="space-y-5">
+
+        <!-- Nom + Prénom -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Nom <span class="text-red-400">*</span></label>
+            <input type="text" id="f-nom" class="inp" placeholder="Votre nom">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Prénom <span class="text-red-400">*</span></label>
+            <input type="text" id="f-prenom" class="inp" placeholder="Votre prénom">
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Email <span class="text-red-400">*</span></label>
+          <input type="email" id="f-email" class="inp" placeholder="votre@email.com">
+        </div>
+
         <!-- Type de code -->
         <div>
-          <label class="block text-sm font-600 text-gray-700 mb-2">
-            Type de code <span class="text-red-500">*</span>
-          </label>
-          <select id="code-type" class="input-field" required>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Type de code <span class="text-red-400">*</span></label>
+          <select id="f-type" class="inp" onchange="onTypeChange()">
             <option value="">Sélectionnez un type…</option>
           </select>
         </div>
 
-        <!-- Code -->
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">
-            Code à vérifier <span class="text-red-500">*</span>
-          </label>
-          <input type="text" id="code-input" class="input-field font-mono uppercase tracking-widest text-lg"
-            placeholder="Ex : XXXX-XXXX-XXXX" maxlength="64" autocomplete="off"
-            oninput="this.value=this.value.toUpperCase()">
-          <p class="text-xs text-gray-400 mt-1">Le code est automatiquement mis en majuscules</p>
+        <!-- Code boxes -->
+        <div id="code-section" class="hidden">
+          <div class="flex items-center justify-between mb-3">
+            <label class="text-sm font-semibold text-gray-700">
+              Code <span class="text-red-400">*</span>
+              <span id="code-format-hint" class="text-xs font-normal text-gray-400 ml-2"></span>
+            </label>
+            <button type="button" onclick="toggleMask()" id="mask-btn"
+              class="flex items-center gap-1.5 text-xs text-gray-400 hover:text-navy transition-colors px-3 py-1.5 rounded-lg border border-gray-200 hover:border-gray-300">
+              <svg id="eye-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+              <span id="mask-label">Masquer le code</span>
+            </button>
+          </div>
+          <div id="code-boxes" class="flex flex-wrap items-center gap-2"></div>
+          <p class="text-xs text-gray-400 mt-2">Cliquez sur la première case et saisissez votre code — une case par caractère.</p>
         </div>
 
-        <!-- Nom (optionnel) -->
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">
-            Nom complet <span class="text-gray-400 font-normal">(optionnel)</span>
-          </label>
-          <input type="text" id="name-input" class="input-field" placeholder="Votre nom">
+        <!-- Remboursement extra fields -->
+        <div id="refund-fields" class="hidden space-y-5">
+          <div class="h-px bg-gray-100"></div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Montant du remboursement (€)</label>
+            <input type="text" id="f-montant" class="inp" placeholder="Ex : 50">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Motif de la demande</label>
+            <textarea id="f-motif" class="inp h-24 resize-none" placeholder="Décrivez la raison de votre demande de remboursement…"></textarea>
+          </div>
         </div>
 
-        <!-- Email (optionnel) -->
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">
-            Email <span class="text-gray-400 font-normal">(optionnel)</span>
-          </label>
-          <input type="email" id="email-input" class="input-field" placeholder="votre@email.com">
-        </div>
+        <!-- Error -->
+        <div id="form-error" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm"></div>
 
-        <!-- Error message -->
-        <div id="submit-error" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm"></div>
-
-        <!-- Submit button -->
-        <button onclick="submitCode()" id="submit-btn"
-          class="btn-gold w-full py-4 rounded-xl text-base font-bold shadow-lg mt-2">
-          Soumettre pour vérification →
+        <!-- Submit -->
+        <button onclick="submitForm()" id="submit-btn"
+          class="btn-gold w-full py-4 rounded-xl text-base font-bold shadow-lg">
+          Envoyer la demande →
         </button>
 
         <p class="text-center text-xs text-gray-400">
-          Vous déjà soumis un code ?
+          Déjà soumis une demande ?
           <button onclick="showView('track')" class="text-gold font-medium hover:underline">Suivre ma demande</button>
         </p>
       </div>
     </div>
 
-    <!-- Success card (hidden) -->
-    <div id="submit-success" class="hidden bg-white rounded-2xl shadow-xl p-8 border border-green-100 fade-in">
+    <!-- Success card -->
+    <div id="success-card" class="hidden bg-white rounded-2xl shadow-xl p-8 border border-green-100 fade-in">
       <div class="text-center">
-        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5">
           <svg width="36" height="36" fill="none" stroke="#065F46" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
         </div>
         <h2 class="text-2xl font-bold text-navy mb-2">Demande enregistrée !</h2>
-        <p class="text-gray-500 mb-6">Votre code a été soumis avec succès. Conservez ce numéro de dossier.</p>
-
-        <div class="bg-navy rounded-xl p-6 mb-6">
-          <p class="text-white/60 text-sm mb-2">Numéro de dossier</p>
+        <p class="text-gray-500 mb-6">Conservez précieusement ce numéro de dossier.</p>
+        <div class="bg-navy rounded-2xl p-6 mb-6">
+          <p class="text-white/50 text-xs uppercase tracking-wider mb-2">Numéro de dossier</p>
           <p id="success-dossier" class="text-gold text-3xl font-extrabold tracking-widest font-mono"></p>
         </div>
-
         <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-left">
-          <div class="flex gap-3">
-            <svg class="shrink-0 mt-0.5" width="18" height="18" fill="none" stroke="#B45309" stroke-width="2" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <p class="text-sm text-amber-800">Notre équipe vérifiera votre code manuellement. Le résultat sera disponible sur la page "Suivre ma demande" avec votre numéro de dossier.</p>
+          <div class="flex gap-2.5">
+            <svg class="shrink-0 mt-0.5 text-amber-600" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <p class="text-sm text-amber-800">Notre équipe traitera votre demande dans les meilleurs délais. Revenez consulter le statut avec votre numéro de dossier.</p>
           </div>
         </div>
-
         <div class="flex gap-3">
-          <button onclick="goTrack()" class="btn-gold flex-1 py-3 rounded-xl font-bold">
-            Suivre ma demande →
-          </button>
-          <button onclick="resetSubmit()" class="flex-1 py-3 rounded-xl border-2 border-gray-200 font-semibold text-gray-600 hover:bg-gray-50 transition-colors">
-            Nouveau code
-          </button>
+          <button onclick="goTrack()" class="btn-gold flex-1 py-3 rounded-xl font-bold text-sm">Suivre ma demande →</button>
+          <button onclick="resetForm()" class="flex-1 py-3 rounded-xl border-2 border-gray-200 font-semibold text-gray-600 hover:bg-gray-50 transition-colors text-sm">Nouvelle demande</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ── TRACK VIEW ── -->
+  <!-- ── TRACK ── -->
   <div id="view-track" class="hidden fade-in">
+    <div class="flex items-center gap-2 mb-5">
+      <button onclick="showView('landing')" class="text-sm text-gray-400 hover:text-navy transition-colors">← Accueil</button>
+      <span class="text-gray-300">/</span>
+      <span class="text-sm font-semibold text-navy">Suivre ma demande</span>
+    </div>
 
-    <!-- Search card -->
     <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-      <div class="flex items-center gap-3 mb-8">
-        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(15,37,87,0.08)">
+      <div class="flex items-center gap-3 mb-7">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:rgba(15,37,87,.08)">
           <svg width="20" height="20" fill="none" stroke="#0F2557" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </div>
         <div>
           <h2 class="text-xl font-bold text-navy">Suivre ma demande</h2>
-          <p class="text-sm text-gray-500">Entrez votre numéro de dossier</p>
+          <p class="text-sm text-gray-400">Entrez votre numéro de dossier</p>
         </div>
       </div>
-
       <div class="space-y-4">
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">Numéro de dossier</label>
-          <input type="text" id="track-input" class="input-field font-mono uppercase tracking-widest text-lg"
-            placeholder="VS-XXXXXXXX" maxlength="11"
-            oninput="this.value=this.value.toUpperCase()"
-            onkeydown="if(event.key==='Enter') trackCode()">
-        </div>
+        <input type="text" id="track-input" class="inp font-mono uppercase tracking-widest text-lg"
+          placeholder="VS-XXXXXXXX" maxlength="11"
+          oninput="this.value=this.value.toUpperCase()"
+          onkeydown="if(event.key==='Enter') trackCode()">
         <div id="track-error" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm"></div>
         <button onclick="trackCode()" class="btn-gold w-full py-4 rounded-xl text-base font-bold shadow-lg">
           Rechercher →
@@ -247,47 +335,42 @@
       </div>
     </div>
 
-    <!-- Result card (hidden) -->
+    <!-- Track result -->
     <div id="track-result" class="hidden mt-5 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden fade-in">
-      <!-- Status header -->
-      <div id="result-header" class="p-6 border-b border-gray-100">
-        <div class="flex items-start justify-between gap-4">
+      <div class="p-6 border-b border-gray-100">
+        <div class="flex items-start justify-between gap-3 flex-wrap">
           <div>
-            <p class="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Numéro de dossier</p>
-            <p id="result-dossier" class="font-mono font-bold text-navy text-xl"></p>
+            <div class="flex items-center gap-2 mb-1">
+              <span id="r-service-badge" class="badge"></span>
+            </div>
+            <p class="text-xs text-gray-400 uppercase tracking-wider mt-2">Numéro de dossier</p>
+            <p id="r-dossier" class="font-mono font-bold text-navy text-xl mt-0.5"></p>
           </div>
-          <div id="result-badge"></div>
+          <div id="r-status-badge"></div>
         </div>
       </div>
-      <!-- Details -->
-      <div class="p-6 space-y-4">
-        <div class="grid grid-cols-2 gap-4">
-          <div class="bg-gray-50 rounded-xl p-4">
-            <p class="text-xs text-gray-500 mb-1">Type de code</p>
-            <p id="result-type" class="font-semibold text-navy text-sm"></p>
+      <div class="p-6">
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <div class="bg-gray-50 rounded-xl p-3">
+            <p class="text-xs text-gray-400 mb-1">Nom</p>
+            <p id="r-nom" class="font-semibold text-navy text-sm"></p>
           </div>
-          <div class="bg-gray-50 rounded-xl p-4">
-            <p class="text-xs text-gray-500 mb-1">Code soumis</p>
-            <p id="result-code" class="font-mono font-bold text-navy text-sm break-all"></p>
+          <div class="bg-gray-50 rounded-xl p-3">
+            <p class="text-xs text-gray-400 mb-1">Prénom</p>
+            <p id="r-prenom" class="font-semibold text-navy text-sm"></p>
           </div>
-          <div class="bg-gray-50 rounded-xl p-4">
-            <p class="text-xs text-gray-500 mb-1">Date de soumission</p>
-            <p id="result-date" class="font-semibold text-navy text-sm"></p>
+          <div class="bg-gray-50 rounded-xl p-3">
+            <p class="text-xs text-gray-400 mb-1">Type de code</p>
+            <p id="r-type" class="font-semibold text-navy text-sm"></p>
           </div>
-          <div class="bg-gray-50 rounded-xl p-4">
-            <p class="text-xs text-gray-500 mb-1">Dernière mise à jour</p>
-            <p id="result-updated" class="font-semibold text-navy text-sm"></p>
+          <div class="bg-gray-50 rounded-xl p-3">
+            <p class="text-xs text-gray-400 mb-1">Soumis le</p>
+            <p id="r-date" class="font-semibold text-navy text-sm"></p>
           </div>
         </div>
-        <!-- Admin comment -->
-        <div id="result-comment-block" class="hidden">
-          <div class="bg-blue-50 border border-blue-100 rounded-xl p-4">
-            <p class="text-xs text-blue-500 font-medium mb-2 flex items-center gap-1">
-              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-              Commentaire de l'administrateur
-            </p>
-            <p id="result-comment" class="text-sm text-blue-900 font-medium"></p>
-          </div>
+        <div id="r-comment-block" class="hidden bg-blue-50 border border-blue-100 rounded-xl p-4">
+          <p class="text-xs text-blue-500 font-medium mb-1">Commentaire</p>
+          <p id="r-comment" class="text-sm text-blue-900 font-medium"></p>
         </div>
       </div>
     </div>
@@ -295,203 +378,303 @@
 
 </main>
 
-<!-- ═══════════════════════ HOW IT WORKS ═══════════════════════ -->
-<section class="bg-white py-16 border-t border-gray-100">
-  <div class="max-w-5xl mx-auto px-4">
-    <h2 class="text-2xl font-bold text-navy text-center mb-10">Comment ça fonctionne ?</h2>
-    <div class="grid md:grid-cols-2 gap-12 max-w-2xl mx-auto">
-      <div class="text-center">
-        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:rgba(201,168,76,0.12)">
-          <span class="text-2xl font-extrabold text-gold">1</span>
-        </div>
-        <h3 class="font-bold text-navy mb-2">Soumettez votre code</h3>
-        <p class="text-gray-500 text-sm">Renseignez le type de code et saisissez le code à vérifier dans le formulaire. Un numéro de dossier vous est attribué.</p>
-      </div>
-      <div class="text-center">
-        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:rgba(6,95,70,0.08)">
-          <span class="text-2xl font-extrabold text-green-700">2</span>
-        </div>
-        <h3 class="font-bold text-navy mb-2">Consultez le résultat</h3>
-        <p class="text-gray-500 text-sm">Revenez sur "Suivre ma demande" avec votre numéro de dossier pour voir le statut et le commentaire associé.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
-<footer class="bg-navy text-white py-10">
-  <div class="max-w-5xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
-    <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg,#C9A84C,#E5C060)">
-        <svg width="16" height="16" fill="none" stroke="#0F2557" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-      </div>
-      <span class="font-bold">Véri<span class="text-gold">Code</span></span>
-    </div>
-    <p class="text-white/40 text-sm">© 2024 VériCode — Plateforme de vérification de codes</p>
-    <a href="admin.html" class="text-white/40 text-sm hover:text-gold transition-colors">Espace administrateur</a>
+<!-- Footer -->
+<footer class="bg-navy text-white py-8">
+  <div class="max-w-5xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-3">
+    <span class="font-bold">Véri<span class="text-gold">Code</span></span>
+    <p class="text-white/40 text-sm">© 2024 VériCode — Plateforme de vérification & remboursement</p>
+    <a href="admin.html" class="text-white/30 text-xs hover:text-gold transition-colors">Espace administrateur</a>
   </div>
 </footer>
 
 <script>
-/* ── Status helpers ── */
+/* ══════════════ CONFIG ══════════════ */
+const CODE_CONFIG = {
+  'Transcash': { length: 14, numeric: true,  groups: [7, 7],    hint: '14 chiffres' },
+  'Neosurf':   { length: 10, numeric: true,  groups: [5, 5],    hint: '10 chiffres' },
+  'PCS':       { length: 16, numeric: true,  groups: [4,4,4,4], hint: '16 chiffres' },
+  'STEAM':     { length: 15, numeric: false, groups: [5, 5, 5], hint: '15 caractères alphanumériques' }
+};
+
 const STATUS_LABELS = {
-  pending:    'En attente',
-  processing: 'Vérification en cours',
-  valid:      'Valide',
-  invalid:    'Invalide',
-  used:       'Déjà utilisé',
-  expired:    'Expiré',
-  completed:  'Traitement terminé'
+  pending:'En attente', processing:'Vérification en cours', valid:'Valide',
+  invalid:'Invalide', used:'Déjà utilisé', expired:'Expiré', completed:'Traitement terminé'
 };
+const STATUS_ICONS = { pending:'⏳', processing:'🔍', valid:'✅', invalid:'❌', used:'⚠️', expired:'🕒', completed:'✔️' };
 
-const STATUS_ICONS = {
-  pending:    '⏳',
-  processing: '🔍',
-  valid:      '✅',
-  invalid:    '❌',
-  used:       '⚠️',
-  expired:    '🕒',
-  completed:  '✔️'
-};
+/* ══════════════ STATE ══════════════ */
+let currentService  = 'verification';
+let currentTypeName = '';
+let codeMasked      = false;
+let lastDossier     = '';
 
-function statusBadge(status) {
-  return `<span class="badge badge-${status}">${STATUS_ICONS[status] || ''} ${STATUS_LABELS[status] || status}</span>`;
+/* ══════════════ NAV ══════════════ */
+function showView(v) {
+  ['landing','form','track'].forEach(x => document.getElementById('view-'+x).classList.toggle('hidden', x !== v));
+  document.getElementById('nav-landing').className = v === 'landing'
+    ? 'text-white text-sm font-medium px-3 py-2 rounded-lg hover:bg-white/10 transition-colors'
+    : 'text-gray-300 text-sm font-medium px-3 py-2 rounded-lg hover:bg-white/10 transition-colors';
+  document.getElementById('nav-track').className = v === 'track'
+    ? 'text-white text-sm font-medium px-3 py-2 rounded-lg hover:bg-white/10 transition-colors'
+    : 'text-gray-300 text-sm font-medium px-3 py-2 rounded-lg hover:bg-white/10 transition-colors';
 }
 
-function formatDate(dt) {
-  if (!dt) return '—';
-  return new Date(dt).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+/* ══════════════ SERVICE ══════════════ */
+function startService(service) {
+  currentService = service;
+  const isRefund = service === 'remboursement';
+
+  document.getElementById('breadcrumb-label').textContent = isRefund ? 'Remboursement' : 'Vérification de code';
+
+  const icon = document.getElementById('form-icon');
+  icon.style.background = isRefund ? 'rgba(15,37,87,0.08)' : 'rgba(201,168,76,0.12)';
+  icon.innerHTML = isRefund
+    ? `<svg width="22" height="22" fill="none" stroke="#0F2557" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>`
+    : `<svg width="22" height="22" fill="none" stroke="#C9A84C" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>`;
+
+  document.getElementById('form-title').textContent = isRefund ? 'Demande de remboursement' : 'Vérification de code';
+  document.getElementById('form-subtitle').textContent = isRefund
+    ? 'Renseignez vos informations et décrivez votre demande'
+    : 'Renseignez vos informations pour vérifier votre code';
+
+  document.getElementById('refund-fields').classList.toggle('hidden', !isRefund);
+  document.getElementById('form-card').classList.remove('hidden');
+  document.getElementById('success-card').classList.add('hidden');
+
+  showView('form');
 }
 
-/* ── Nav ── */
-let currentView = 'submit';
-
-function showView(view) {
-  currentView = view;
-  document.getElementById('view-submit').classList.toggle('hidden', view !== 'submit');
-  document.getElementById('view-track').classList.toggle('hidden', view !== 'track');
-  document.getElementById('nav-submit').className = view === 'submit'
-    ? 'nav-active text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-white/10 transition-colors'
-    : 'text-gray-300 text-sm font-medium px-4 py-2 rounded-lg hover:bg-white/10 transition-colors';
-  document.getElementById('nav-track').className = view === 'track'
-    ? 'nav-active text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-white/10 transition-colors'
-    : 'text-gray-300 text-sm font-medium px-4 py-2 rounded-lg hover:bg-white/10 transition-colors';
-}
-
-/* ── Load code types ── */
+/* ══════════════ LOAD TYPES ══════════════ */
 async function loadTypes() {
   try {
-    const res = await fetch('/api/code-types');
-    const { types } = await res.json();
-    const sel = document.getElementById('code-type');
+    const { types } = await (await fetch('/api/code-types')).json();
+    const sel = document.getElementById('f-type');
+    sel.innerHTML = '<option value="">Sélectionnez un type…</option>';
     types.forEach(t => {
-      const opt = document.createElement('option');
-      opt.value = t.id;
-      opt.textContent = t.name;
-      sel.appendChild(opt);
+      const o = document.createElement('option');
+      o.value = t.id;
+      o.dataset.name = t.name;
+      o.textContent = t.name;
+      sel.appendChild(o);
     });
-  } catch (e) { console.error('Erreur chargement types', e); }
+  } catch {}
 }
 
-/* ── Submit ── */
-async function submitCode() {
-  const type = document.getElementById('code-type').value;
-  const code = document.getElementById('code-input').value.trim();
-  const name = document.getElementById('name-input').value.trim();
-  const email = document.getElementById('email-input').value.trim();
-  const errEl = document.getElementById('submit-error');
+/* ══════════════ CODE BOXES ══════════════ */
+function onTypeChange() {
+  const sel = document.getElementById('f-type');
+  const opt = sel.options[sel.selectedIndex];
+  currentTypeName = opt?.dataset?.name || '';
+  const config = CODE_CONFIG[currentTypeName];
+  const section = document.getElementById('code-section');
 
-  errEl.classList.add('hidden');
+  if (!config) { section.classList.add('hidden'); return; }
 
-  if (!type) { showErr(errEl, 'Veuillez sélectionner un type de code.'); return; }
-  if (!code) { showErr(errEl, 'Veuillez saisir votre code.'); return; }
-  if (code.length < 3) { showErr(errEl, 'Le code doit contenir au moins 3 caractères.'); return; }
+  document.getElementById('code-format-hint').textContent = `(${config.hint})`;
+  section.classList.remove('hidden');
+  renderBoxes(config);
+}
 
-  const btn = document.getElementById('submit-btn');
-  btn.disabled = true;
-  btn.textContent = 'Envoi en cours…';
+function renderBoxes(config) {
+  const container = document.getElementById('code-boxes');
+  container.innerHTML = '';
+  let idx = 0;
+  config.groups.forEach((size, gi) => {
+    const grp = document.createElement('div');
+    grp.className = 'flex gap-1.5';
+    for (let i = 0; i < size; i++) {
+      const box = document.createElement('input');
+      box.type = codeMasked ? 'password' : 'text';
+      box.maxLength = 1;
+      box.dataset.index = idx;
+      box.className = 'code-box';
+      box.autocomplete = 'off';
+      if (config.numeric) box.inputMode = 'numeric';
+      box.addEventListener('input',   e => handleInput(e, config));
+      box.addEventListener('keydown', e => handleKeydown(e));
+      box.addEventListener('paste',   e => handlePaste(e, config));
+      grp.appendChild(box);
+      idx++;
+    }
+    container.appendChild(grp);
+    if (gi < config.groups.length - 1) {
+      const sep = document.createElement('span');
+      sep.className = 'code-sep flex items-center';
+      sep.textContent = '–';
+      container.appendChild(sep);
+    }
+  });
+  container.querySelector('.code-box')?.focus();
+}
 
-  try {
-    const res = await fetch('/api/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code_type_id: +type, code, name: name || null, email: email || null })
-    });
-    const data = await res.json();
-    if (!res.ok) { showErr(errEl, data.error || 'Erreur lors de la soumission.'); return; }
-
-    document.getElementById('success-dossier').textContent = data.dossier;
-    document.getElementById('submit-form-card').classList.add('hidden');
-    document.getElementById('submit-success').classList.remove('hidden');
-    window._lastDossier = data.dossier;
-  } catch {
-    showErr(errEl, 'Erreur de connexion. Réessayez dans un instant.');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Soumettre pour vérification →';
+function handleInput(e, config) {
+  let val = e.target.value;
+  if (config.numeric) val = val.replace(/\D/g, '');
+  else val = val.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+  e.target.value = val.slice(-1);
+  e.target.classList.toggle('filled', !!e.target.value);
+  if (e.target.value) {
+    const next = document.querySelector(`.code-box[data-index="${+e.target.dataset.index + 1}"]`);
+    if (next) next.focus();
   }
 }
 
-function showErr(el, msg) {
-  el.textContent = msg;
-  el.classList.remove('hidden');
+function handleKeydown(e) {
+  if (e.key === 'Backspace' && !e.target.value) {
+    const prev = document.querySelector(`.code-box[data-index="${+e.target.dataset.index - 1}"]`);
+    if (prev) { prev.value = ''; prev.classList.remove('filled'); prev.focus(); }
+  }
+  if (e.key === 'ArrowLeft') {
+    const prev = document.querySelector(`.code-box[data-index="${+e.target.dataset.index - 1}"]`);
+    if (prev) prev.focus();
+  }
+  if (e.key === 'ArrowRight') {
+    const next = document.querySelector(`.code-box[data-index="${+e.target.dataset.index + 1}"]`);
+    if (next) next.focus();
+  }
 }
 
-function resetSubmit() {
-  document.getElementById('submit-form-card').classList.remove('hidden');
-  document.getElementById('submit-success').classList.add('hidden');
-  document.getElementById('code-input').value = '';
-  document.getElementById('name-input').value = '';
-  document.getElementById('email-input').value = '';
-  document.getElementById('code-type').value = '';
-  document.getElementById('submit-error').classList.add('hidden');
+function handlePaste(e, config) {
+  e.preventDefault();
+  let text = e.clipboardData.getData('text');
+  if (config.numeric) text = text.replace(/\D/g, '');
+  else text = text.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+
+  const boxes = [...document.querySelectorAll('.code-box')];
+  const start = +e.target.dataset.index;
+  [...text].forEach((ch, i) => {
+    if (boxes[start + i]) {
+      boxes[start + i].value = ch;
+      boxes[start + i].classList.add('filled');
+    }
+  });
+  const last = boxes[Math.min(start + text.length, boxes.length - 1)];
+  if (last) last.focus();
+}
+
+function getCode() {
+  return [...document.querySelectorAll('.code-box')].map(b => b.value).join('');
+}
+
+/* ══════════════ MASKING ══════════════ */
+function toggleMask() {
+  codeMasked = !codeMasked;
+  document.querySelectorAll('.code-box').forEach(b => {
+    b.type = codeMasked ? 'password' : 'text';
+  });
+  document.getElementById('mask-label').textContent = codeMasked ? 'Afficher le code' : 'Masquer le code';
+  document.getElementById('eye-icon').innerHTML = codeMasked
+    ? `<path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>`
+    : `<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;
+}
+
+/* ══════════════ SUBMIT ══════════════ */
+async function submitForm() {
+  const nom    = document.getElementById('f-nom').value.trim();
+  const prenom = document.getElementById('f-prenom').value.trim();
+  const email  = document.getElementById('f-email').value.trim();
+  const typeEl = document.getElementById('f-type');
+  const typeId = typeEl.value;
+  const code   = getCode();
+  const errEl  = document.getElementById('form-error');
+  errEl.classList.add('hidden');
+
+  const config = CODE_CONFIG[currentTypeName];
+
+  if (!nom)    { showErr(errEl, 'Veuillez saisir votre nom.'); return; }
+  if (!prenom) { showErr(errEl, 'Veuillez saisir votre prénom.'); return; }
+  if (!email || !email.includes('@')) { showErr(errEl, 'Veuillez saisir un email valide.'); return; }
+  if (!typeId) { showErr(errEl, 'Veuillez sélectionner un type de code.'); return; }
+  if (config && code.length < config.length) {
+    showErr(errEl, `Le code ${currentTypeName} doit contenir ${config.length} caractères (${code.length}/${config.length}).`); return;
+  }
+  if (!code) { showErr(errEl, 'Veuillez saisir votre code.'); return; }
+
+  const body = {
+    service_type: currentService,
+    code_type_id: +typeId,
+    code, nom, prenom, email
+  };
+  if (currentService === 'remboursement') {
+    body.montant = document.getElementById('f-montant').value.trim() || null;
+    body.motif   = document.getElementById('f-motif').value.trim() || null;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.textContent = 'Envoi en cours…';
+  try {
+    const res  = await fetch('/api/submit', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    const data = await res.json();
+    if (!res.ok) { showErr(errEl, data.error || 'Erreur lors de la soumission.'); return; }
+    lastDossier = data.dossier;
+    document.getElementById('success-dossier').textContent = data.dossier;
+    document.getElementById('form-card').classList.add('hidden');
+    document.getElementById('success-card').classList.remove('hidden');
+  } catch { showErr(errEl, 'Erreur de connexion. Réessayez.'); }
+  finally { btn.disabled = false; btn.textContent = 'Envoyer la demande →'; }
+}
+
+function showErr(el, msg) { el.textContent = msg; el.classList.remove('hidden'); }
+
+function resetForm() {
+  document.getElementById('f-nom').value = '';
+  document.getElementById('f-prenom').value = '';
+  document.getElementById('f-email').value = '';
+  document.getElementById('f-type').value = '';
+  document.getElementById('f-montant').value = '';
+  document.getElementById('f-motif').value = '';
+  document.getElementById('code-boxes').innerHTML = '';
+  document.getElementById('code-section').classList.add('hidden');
+  document.getElementById('form-error').classList.add('hidden');
+  document.getElementById('form-card').classList.remove('hidden');
+  document.getElementById('success-card').classList.add('hidden');
+  codeMasked = false;
 }
 
 function goTrack() {
-  if (window._lastDossier) document.getElementById('track-input').value = window._lastDossier;
+  document.getElementById('track-input').value = lastDossier;
   showView('track');
-  if (window._lastDossier) trackCode();
+  if (lastDossier) trackCode();
 }
 
-/* ── Track ── */
+/* ══════════════ TRACK ══════════════ */
 async function trackCode() {
   const dossier = document.getElementById('track-input').value.trim().toUpperCase();
-  const errEl = document.getElementById('track-error');
-  const resultEl = document.getElementById('track-result');
+  const errEl   = document.getElementById('track-error');
+  const result  = document.getElementById('track-result');
   errEl.classList.add('hidden');
-  resultEl.classList.add('hidden');
-
+  result.classList.add('hidden');
   if (!dossier) { showErr(errEl, 'Veuillez saisir un numéro de dossier.'); return; }
 
   try {
-    const res = await fetch('/api/track/' + encodeURIComponent(dossier));
+    const res  = await fetch('/api/track/' + encodeURIComponent(dossier));
     const data = await res.json();
     if (!res.ok) { showErr(errEl, data.error || 'Dossier introuvable.'); return; }
-
     const s = data.submission;
-    document.getElementById('result-dossier').textContent = s.dossier_number;
-    document.getElementById('result-badge').innerHTML = statusBadge(s.status);
-    document.getElementById('result-type').textContent = s.code_type_name || '—';
-    document.getElementById('result-code').textContent = s.code;
-    document.getElementById('result-date').textContent = formatDate(s.created_at);
-    document.getElementById('result-updated').textContent = formatDate(s.updated_at);
+    const isRefund = s.service_type === 'remboursement';
 
-    const commentBlock = document.getElementById('result-comment-block');
-    if (s.admin_comment) {
-      document.getElementById('result-comment').textContent = s.admin_comment;
-      commentBlock.classList.remove('hidden');
-    } else {
-      commentBlock.classList.add('hidden');
-    }
-
-    resultEl.classList.remove('hidden');
-    resultEl.classList.add('fade-in');
-  } catch {
-    showErr(errEl, 'Erreur de connexion. Réessayez dans un instant.');
-  }
+    document.getElementById('r-service-badge').innerHTML = isRefund
+      ? '<span class="badge badge-remboursement">↩ Remboursement</span>'
+      : '<span class="badge badge-verification">✓ Vérification</span>';
+    document.getElementById('r-dossier').textContent   = s.dossier_number;
+    document.getElementById('r-status-badge').innerHTML = `<span class="badge badge-${s.status}">${STATUS_ICONS[s.status]||''} ${STATUS_LABELS[s.status]||s.status}</span>`;
+    document.getElementById('r-nom').textContent    = s.nom || '—';
+    document.getElementById('r-prenom').textContent = s.prenom || '—';
+    document.getElementById('r-type').textContent   = s.code_type_name || '—';
+    document.getElementById('r-date').textContent   = fmt(s.created_at);
+    const cb = document.getElementById('r-comment-block');
+    if (s.admin_comment) { document.getElementById('r-comment').textContent = s.admin_comment; cb.classList.remove('hidden'); }
+    else cb.classList.add('hidden');
+    result.classList.remove('hidden');
+  } catch { showErr(errEl, 'Erreur de connexion. Réessayez.'); }
 }
 
-/* ── Init ── */
+function fmt(dt) {
+  if (!dt) return '—';
+  return new Date(dt).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+
+/* ══════════════ INIT ══════════════ */
 loadTypes();
 </script>
 </body>

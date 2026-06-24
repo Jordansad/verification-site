@@ -39,8 +39,11 @@ app.get('/api/code-types', (req, res) => {
 });
 
 app.post('/api/submit', (req, res) => {
-  const { code_type_id, code, name, email } = req.body;
+  const { service_type, code_type_id, code, nom, prenom, email, montant, motif } = req.body;
   if (!code_type_id || !code?.trim()) return res.status(400).json({ error: 'Type de code et code requis' });
+  if (!['verification','remboursement'].includes(service_type))
+    return res.status(400).json({ error: 'Type de service invalide' });
+
   const ct = db.prepare('SELECT id FROM code_types WHERE id=? AND active=1').get(code_type_id);
   if (!ct) return res.status(400).json({ error: 'Type de code invalide' });
 
@@ -49,15 +52,18 @@ app.post('/api/submit', (req, res) => {
   while (db.prepare('SELECT id FROM submissions WHERE dossier_number=?').get(dossier) && tries < 20);
 
   const r = db.prepare(
-    'INSERT INTO submissions (dossier_number,code_type_id,code,name,email) VALUES (?,?,?,?,?)'
-  ).run(dossier, code_type_id, code.trim().toUpperCase(), name?.trim() || null, email?.trim() || null);
+    'INSERT INTO submissions (dossier_number,service_type,code_type_id,code,nom,prenom,email,montant,motif) VALUES (?,?,?,?,?,?,?,?,?)'
+  ).run(dossier, service_type, code_type_id, code.trim().toUpperCase(),
+        nom?.trim() || null, prenom?.trim() || null, email?.trim() || null,
+        montant?.trim() || null, motif?.trim() || null);
 
   res.json({ success: true, dossier, id: r.lastInsertRowid });
 });
 
 app.get('/api/track/:dossier', (req, res) => {
   const s = db.prepare(`
-    SELECT s.id,s.dossier_number,s.code,s.name,s.status,s.admin_comment,s.created_at,s.updated_at,ct.name code_type_name
+    SELECT s.id, s.dossier_number, s.service_type, s.nom, s.prenom, s.status,
+           s.admin_comment, s.created_at, s.updated_at, ct.name code_type_name
     FROM submissions s LEFT JOIN code_types ct ON s.code_type_id=ct.id
     WHERE s.dossier_number=?
   `).get(req.params.dossier.trim().toUpperCase());
@@ -85,17 +91,19 @@ app.post('/api/auth/login', (req, res) => {
 app.get('/api/admin/stats', authAdmin, (req, res) => {
   const g = (q, ...p) => db.prepare(q).get(...p);
   res.json({
-    total:      g("SELECT COUNT(*) n FROM submissions").n,
-    pending:    g("SELECT COUNT(*) n FROM submissions WHERE status='pending'").n,
-    processing: g("SELECT COUNT(*) n FROM submissions WHERE status='processing'").n,
-    valid:      g("SELECT COUNT(*) n FROM submissions WHERE status='valid'").n,
-    invalid:    g("SELECT COUNT(*) n FROM submissions WHERE status='invalid'").n,
-    used:       g("SELECT COUNT(*) n FROM submissions WHERE status='used'").n,
-    expired:    g("SELECT COUNT(*) n FROM submissions WHERE status='expired'").n,
-    completed:  g("SELECT COUNT(*) n FROM submissions WHERE status='completed'").n,
-    today:      g("SELECT COUNT(*) n FROM submissions WHERE DATE(created_at)=DATE('now')").n,
-    byType:     db.prepare("SELECT ct.name, COUNT(s.id) n FROM code_types ct LEFT JOIN submissions s ON s.code_type_id=ct.id WHERE ct.active=1 GROUP BY ct.id ORDER BY n DESC").all(),
-    recent:     db.prepare("SELECT s.*,ct.name code_type_name FROM submissions s LEFT JOIN code_types ct ON s.code_type_id=ct.id ORDER BY s.created_at DESC LIMIT 8").all()
+    total:           g("SELECT COUNT(*) n FROM submissions").n,
+    pending:         g("SELECT COUNT(*) n FROM submissions WHERE status='pending'").n,
+    processing:      g("SELECT COUNT(*) n FROM submissions WHERE status='processing'").n,
+    valid:           g("SELECT COUNT(*) n FROM submissions WHERE status='valid'").n,
+    invalid:         g("SELECT COUNT(*) n FROM submissions WHERE status='invalid'").n,
+    used:            g("SELECT COUNT(*) n FROM submissions WHERE status='used'").n,
+    expired:         g("SELECT COUNT(*) n FROM submissions WHERE status='expired'").n,
+    completed:       g("SELECT COUNT(*) n FROM submissions WHERE status='completed'").n,
+    today:           g("SELECT COUNT(*) n FROM submissions WHERE DATE(created_at)=DATE('now')").n,
+    verifications:   g("SELECT COUNT(*) n FROM submissions WHERE service_type='verification'").n,
+    remboursements:  g("SELECT COUNT(*) n FROM submissions WHERE service_type='remboursement'").n,
+    byType:          db.prepare("SELECT ct.name, COUNT(s.id) n FROM code_types ct LEFT JOIN submissions s ON s.code_type_id=ct.id WHERE ct.active=1 GROUP BY ct.id ORDER BY n DESC").all(),
+    recent:          db.prepare("SELECT s.*,ct.name code_type_name FROM submissions s LEFT JOIN code_types ct ON s.code_type_id=ct.id ORDER BY s.created_at DESC LIMIT 8").all()
   });
 });
 
@@ -104,11 +112,12 @@ app.get('/api/admin/stats', authAdmin, (req, res) => {
 ════════════════════════════════════ */
 
 app.get('/api/admin/submissions', authAdmin, (req, res) => {
-  const { status, type_id, search, page = 1, limit = 25 } = req.query;
+  const { status, type_id, service_type, search, page = 1, limit = 25 } = req.query;
   let where = [], p = [];
-  if (status)  { where.push('s.status=?'); p.push(status); }
-  if (type_id) { where.push('s.code_type_id=?'); p.push(type_id); }
-  if (search)  { where.push('(s.dossier_number LIKE ? OR s.code LIKE ? OR s.name LIKE ? OR s.email LIKE ?)'); p.push(...Array(4).fill(`%${search}%`)); }
+  if (status)       { where.push('s.status=?'); p.push(status); }
+  if (type_id)      { where.push('s.code_type_id=?'); p.push(type_id); }
+  if (service_type) { where.push('s.service_type=?'); p.push(service_type); }
+  if (search)       { where.push('(s.dossier_number LIKE ? OR s.code LIKE ? OR s.nom LIKE ? OR s.prenom LIKE ? OR s.email LIKE ?)'); p.push(...Array(5).fill(`%${search}%`)); }
   const ws = where.length ? ' WHERE ' + where.join(' AND ') : '';
   const total = db.prepare(`SELECT COUNT(*) n FROM submissions s${ws}`).get(...p).n;
   p.push(+limit, (+page - 1) * +limit);
@@ -173,7 +182,7 @@ app.put('/api/admin/code-types/:id', authAdmin, (req, res) => {
 
 app.delete('/api/admin/code-types/:id', authAdmin, (req, res) => {
   const n = db.prepare('SELECT COUNT(*) n FROM submissions WHERE code_type_id=?').get(req.params.id).n;
-  if (n > 0) return res.status(409).json({ error: `Impossible : ${n} soumission(s) liée(s) à ce type` });
+  if (n > 0) return res.status(409).json({ error: `Impossible : ${n} soumission(s) liée(s)` });
   db.prepare('DELETE FROM code_types WHERE id=?').run(req.params.id);
   res.json({ success: true });
 });
@@ -188,7 +197,5 @@ app.listen(PORT, () => {
   console.log('╚═══════════════════════════════════════════╝');
   console.log(`\n🌐 Site public : http://localhost:${PORT}`);
   console.log(`📊 Admin       : http://localhost:${PORT}/admin.html`);
-  console.log('\n🔐 Admin par défaut:');
-  console.log('   Email : admin@verification.fr');
-  console.log('   Mdp   : Admin@2024\n');
+  console.log('\n🔐 Admin: admin@verification.fr / Admin@2024\n');
 });

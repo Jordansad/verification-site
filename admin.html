@@ -16,13 +16,15 @@
 
   /* Status badges */
   .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
-  .badge-pending    { background:#FEF3C7; color:#92400E; }
-  .badge-processing { background:#DBEAFE; color:#1E40AF; }
-  .badge-valid      { background:#D1FAE5; color:#065F46; }
-  .badge-invalid    { background:#FEE2E2; color:#991B1B; }
-  .badge-used       { background:#FFEDD5; color:#9A3412; }
-  .badge-expired    { background:#F3F4F6; color:#374151; }
-  .badge-completed  { background:#CCFBF1; color:#134E4A; }
+  .badge-pending        { background:#FEF3C7; color:#92400E; }
+  .badge-processing     { background:#DBEAFE; color:#1E40AF; }
+  .badge-valid          { background:#D1FAE5; color:#065F46; }
+  .badge-invalid        { background:#FEE2E2; color:#991B1B; }
+  .badge-used           { background:#FFEDD5; color:#9A3412; }
+  .badge-expired        { background:#F3F4F6; color:#374151; }
+  .badge-completed      { background:#CCFBF1; color:#134E4A; }
+  .badge-verification   { background:#EDE9FE; color:#5B21B6; }
+  .badge-remboursement  { background:#FCE7F3; color:#9D174D; }
 
   /* Sidebar */
   .sidebar-link { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; font-size:14px; font-weight:500; color:rgba(255,255,255,0.7); transition:all 0.2s; cursor:pointer; }
@@ -226,6 +228,11 @@
         <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm mb-4 flex flex-wrap gap-3">
           <input type="text" id="f-search" class="inp flex-1 min-w-48" placeholder="🔍 Rechercher dossier, code, nom…"
             oninput="debounceLoad()">
+          <select id="f-service" class="inp w-48" onchange="loadSubmissions()">
+            <option value="">Tous les services</option>
+            <option value="verification">✓ Vérification</option>
+            <option value="remboursement">↩ Remboursement</option>
+          </select>
           <select id="f-status" class="inp w-52" onchange="loadSubmissions()">
             <option value="">Tous les statuts</option>
             <option value="pending">En attente</option>
@@ -236,7 +243,7 @@
             <option value="expired">Expiré</option>
             <option value="completed">Traitement terminé</option>
           </select>
-          <select id="f-type" class="inp w-52" onchange="loadSubmissions()">
+          <select id="f-type" class="inp w-44" onchange="loadSubmissions()">
             <option value="">Tous les types</option>
           </select>
           <button onclick="clearFilters()" class="btn-secondary text-sm px-4">Réinitialiser</button>
@@ -247,9 +254,10 @@
           <table class="tbl w-full">
             <thead><tr>
               <th>Dossier</th>
+              <th>Service</th>
               <th>Type</th>
-              <th>Code</th>
-              <th>Nom</th>
+              <th>Code complet</th>
+              <th>Nom & Prénom</th>
               <th>Soumis le</th>
               <th>Statut</th>
             </tr></thead>
@@ -299,23 +307,29 @@
       <button onclick="closeSubModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600">✕</button>
     </div>
     <div class="p-6 space-y-5">
+      <!-- Service badge -->
+      <div id="m-service-badge"></div>
       <!-- Info grid -->
       <div class="grid grid-cols-2 gap-3">
         <div class="bg-gray-50 rounded-xl p-3">
-          <p class="text-xs text-gray-400 mb-1">Type de code</p>
-          <p id="m-type" class="font-semibold text-navy text-sm"></p>
-        </div>
-        <div class="bg-gray-50 rounded-xl p-3">
-          <p class="text-xs text-gray-400 mb-1">Code soumis</p>
-          <p id="m-code" class="font-mono font-bold text-navy text-sm break-all"></p>
-        </div>
-        <div class="bg-gray-50 rounded-xl p-3">
           <p class="text-xs text-gray-400 mb-1">Nom</p>
-          <p id="m-name" class="font-semibold text-navy text-sm"></p>
+          <p id="m-nom" class="font-semibold text-navy text-sm"></p>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-3">
+          <p class="text-xs text-gray-400 mb-1">Prénom</p>
+          <p id="m-prenom" class="font-semibold text-navy text-sm"></p>
         </div>
         <div class="bg-gray-50 rounded-xl p-3">
           <p class="text-xs text-gray-400 mb-1">Email</p>
           <p id="m-email" class="font-semibold text-navy text-sm break-all"></p>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-3">
+          <p class="text-xs text-gray-400 mb-1">Type de code</p>
+          <p id="m-type" class="font-semibold text-navy text-sm"></p>
+        </div>
+        <div class="col-span-2 bg-navy rounded-xl p-3">
+          <p class="text-xs text-white/50 mb-1">Code complet</p>
+          <p id="m-code" class="font-mono font-bold text-gold text-base tracking-widest break-all"></p>
         </div>
         <div class="bg-gray-50 rounded-xl p-3">
           <p class="text-xs text-gray-400 mb-1">Soumis le</p>
@@ -324,6 +338,14 @@
         <div class="bg-gray-50 rounded-xl p-3">
           <p class="text-xs text-gray-400 mb-1">Mis à jour</p>
           <p id="m-updated" class="font-semibold text-navy text-sm"></p>
+        </div>
+      </div>
+      <!-- Remboursement fields -->
+      <div id="m-refund-block" class="hidden bg-pink-50 border border-pink-100 rounded-xl p-4 space-y-2">
+        <p class="text-xs text-pink-500 font-semibold uppercase tracking-wider mb-2">↩ Informations de remboursement</p>
+        <div class="flex gap-4">
+          <div><p class="text-xs text-gray-400">Montant demandé</p><p id="m-montant" class="font-bold text-navy text-sm"></p></div>
+          <div class="flex-1"><p class="text-xs text-gray-400">Motif</p><p id="m-motif" class="font-medium text-navy text-sm"></p></div>
         </div>
       </div>
 
@@ -535,7 +557,7 @@ async function loadDashboard() {
       <tr onclick="openSubModal(${s.id})">
         <td><span class="font-mono font-bold text-navy text-xs">${s.dossier_number}</span></td>
         <td class="text-gray-500 text-xs">${s.code_type_name||'—'}</td>
-        <td><span class="font-mono text-xs bg-gray-100 px-2 py-1 rounded">${s.code}</span></td>
+        <td><span class="font-mono text-xs bg-gray-100 px-2 py-1 rounded tracking-wider">${s.code}</span></td>
         <td>${badge(s.status)}</td>
       </tr>
     `).join('') || '<tr><td colspan="4" class="text-center text-gray-400 py-6">Aucune demande</td></tr>';
@@ -545,13 +567,15 @@ async function loadDashboard() {
 
 /* ── Submissions ── */
 async function loadSubmissions() {
-  const search  = document.getElementById('f-search').value.trim();
-  const status  = document.getElementById('f-status').value;
-  const type_id = document.getElementById('f-type').value;
+  const search       = document.getElementById('f-search').value.trim();
+  const status       = document.getElementById('f-status').value;
+  const type_id      = document.getElementById('f-type').value;
+  const service_type = document.getElementById('f-service').value;
   let url = `/api/admin/submissions?page=${subPage}&limit=25`;
-  if (search)  url += '&search=' + encodeURIComponent(search);
-  if (status)  url += '&status=' + status;
-  if (type_id) url += '&type_id=' + type_id;
+  if (search)       url += '&search=' + encodeURIComponent(search);
+  if (status)       url += '&status=' + status;
+  if (type_id)      url += '&type_id=' + type_id;
+  if (service_type) url += '&service_type=' + service_type;
 
   try {
     const d = await api(url);
@@ -572,9 +596,12 @@ async function loadSubmissions() {
     tbody.innerHTML = d.submissions.map(s => `
       <tr onclick="openSubModal(${s.id})">
         <td><span class="font-mono font-bold text-navy text-xs">${s.dossier_number}</span></td>
+        <td>${s.service_type==='remboursement'
+          ? '<span class="badge badge-remboursement text-xs">↩ Remb.</span>'
+          : '<span class="badge badge-verification text-xs">✓ Vérif.</span>'}</td>
         <td class="text-gray-500 text-xs">${s.code_type_name||'—'}</td>
-        <td><span class="font-mono text-xs bg-gray-100 px-2 py-1 rounded">${s.code}</span></td>
-        <td class="text-gray-600 text-xs">${s.name||'—'}</td>
+        <td><span class="font-mono text-xs bg-gray-100 px-2 py-1 rounded tracking-wider font-bold">${s.code}</span></td>
+        <td class="text-gray-600 text-xs">${[s.nom,s.prenom].filter(Boolean).join(' ')||'—'}</td>
         <td class="text-gray-400 text-xs">${fmtShort(s.created_at)}</td>
         <td>${badge(s.status)}</td>
       </tr>
@@ -596,9 +623,10 @@ function changePage(dir) {
 }
 
 function clearFilters() {
-  document.getElementById('f-search').value = '';
-  document.getElementById('f-status').value = '';
-  document.getElementById('f-type').value   = '';
+  document.getElementById('f-search').value  = '';
+  document.getElementById('f-status').value  = '';
+  document.getElementById('f-type').value    = '';
+  document.getElementById('f-service').value = '';
   subPage = 1;
   loadSubmissions();
 }
@@ -630,15 +658,26 @@ async function openSubModal(id) {
   try {
     const d = await api('/api/admin/submissions/' + id);
     const s = d.submission;
-    document.getElementById('m-dossier').textContent = s.dossier_number;
+    const isRefund = s.service_type === 'remboursement';
+    document.getElementById('m-dossier').textContent  = s.dossier_number;
+    document.getElementById('m-service-badge').innerHTML = isRefund
+      ? '<span class="badge badge-remboursement">↩ Remboursement</span>'
+      : '<span class="badge badge-verification">✓ Vérification de code</span>';
+    document.getElementById('m-nom').textContent     = s.nom || '—';
+    document.getElementById('m-prenom').textContent  = s.prenom || '—';
+    document.getElementById('m-email').textContent   = s.email || '—';
     document.getElementById('m-type').textContent    = s.code_type_name || '—';
     document.getElementById('m-code').textContent    = s.code;
-    document.getElementById('m-name').textContent    = s.name || '—';
-    document.getElementById('m-email').textContent   = s.email || '—';
     document.getElementById('m-date').textContent    = fmt(s.created_at);
     document.getElementById('m-updated').textContent = fmt(s.updated_at);
     document.getElementById('m-status').value        = s.status;
     document.getElementById('m-comment').value       = s.admin_comment || '';
+    const rb = document.getElementById('m-refund-block');
+    if (isRefund) {
+      document.getElementById('m-montant').textContent = s.montant ? s.montant + ' €' : '—';
+      document.getElementById('m-motif').textContent   = s.motif || '—';
+      rb.classList.remove('hidden');
+    } else { rb.classList.add('hidden'); }
     document.getElementById('sub-modal').classList.remove('hidden');
   } catch (e) { showToast(e.message, false); }
 }
