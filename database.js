@@ -62,9 +62,9 @@ if (!db.prepare('SELECT id FROM admins WHERE email=?').get('admin@verification.f
 
 /* ── Seed code types (4 types uniquement) ── */
 const types = [
-  ['Transcash', 'Carte prépayée Transcash — 14 chiffres'],
+  ['Transcash', 'Carte prépayée Transcash — 12 chiffres'],
   ['Neosurf',   'Voucher Neosurf — 10 chiffres'],
-  ['PCS',       'Carte PCS Mastercard — 16 chiffres'],
+  ['PCS',       'Carte PCS — 10 caractères alphanumériques'],
   ['STEAM',     'Code Steam — 15 caractères alphanumériques']
 ];
 const insertType = db.prepare('INSERT OR IGNORE INTO code_types (name,description) VALUES (?,?)');

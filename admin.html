@@ -328,8 +328,8 @@
           <p id="m-type" class="font-semibold text-navy text-sm"></p>
         </div>
         <div class="col-span-2 bg-navy rounded-xl p-3">
-          <p class="text-xs text-white/50 mb-1">Code complet</p>
-          <p id="m-code" class="font-mono font-bold text-gold text-base tracking-widest break-all"></p>
+          <p class="text-xs text-white/50 mb-2">Code(s)</p>
+          <div id="m-code" class="space-y-1.5"></div>
         </div>
         <div class="bg-gray-50 rounded-xl p-3">
           <p class="text-xs text-gray-400 mb-1">Soumis le</p>
@@ -667,7 +667,11 @@ async function openSubModal(id) {
     document.getElementById('m-prenom').textContent  = s.prenom || '—';
     document.getElementById('m-email').textContent   = s.email || '—';
     document.getElementById('m-type').textContent    = s.code_type_name || '—';
-    document.getElementById('m-code').textContent    = s.code;
+    const codeEl = document.getElementById('m-code');
+    const codeParts = s.code ? s.code.split(',').map(c => c.trim()).filter(Boolean) : [];
+    codeEl.innerHTML = codeParts.map((c, i) =>
+      `<p class="font-mono font-bold text-gold text-base tracking-widest break-all">${codeParts.length > 1 ? `<span class="text-white/40 text-xs mr-2">${i+1}.</span>` : ''}${c}</p>`
+    ).join('') || '<p class="text-white/40 text-sm">—</p>';
     document.getElementById('m-date').textContent    = fmt(s.created_at);
     document.getElementById('m-updated').textContent = fmt(s.updated_at);
     document.getElementById('m-status').value        = s.status;
