@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VériCode — Administration</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { font-family: 'Inter', sans-serif; }
+  .bg-navy { background-color: #0F2557; }
+  .text-navy { color: #0F2557; }
+  .text-gold { color: #C9A84C; }
+  .border-gold { border-color: #C9A84C; }
+
+  /* Status badges */
+  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .badge-pending    { background:#FEF3C7; color:#92400E; }
+  .badge-processing { background:#DBEAFE; color:#1E40AF; }
+  .badge-valid      { background:#D1FAE5; color:#065F46; }
+  .badge-invalid    { background:#FEE2E2; color:#991B1B; }
+  .badge-used       { background:#FFEDD5; color:#9A3412; }
+  .badge-expired    { background:#F3F4F6; color:#374151; }
+  .badge-completed  { background:#CCFBF1; color:#134E4A; }
+
+  /* Sidebar */
+  .sidebar-link { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; font-size:14px; font-weight:500; color:rgba(255,255,255,0.7); transition:all 0.2s; cursor:pointer; }
+  .sidebar-link:hover { background:rgba(255,255,255,0.1); color:white; }
+  .sidebar-link.active { background:rgba(201,168,76,0.2); color:#C9A84C; }
+
+  /* Input */
+  .inp { width:100%; padding:10px 14px; border:2px solid #E5E7EB; border-radius:8px; font-size:14px; transition:border-color 0.2s; }
+  .inp:focus { outline:none; border-color:#C9A84C; box-shadow:0 0 0 3px rgba(201,168,76,0.15); }
+  select.inp { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 10px center; background-size:16px; appearance:none; padding-right:36px; }
+
+  /* Button */
+  .btn-primary { background:linear-gradient(135deg,#C9A84C,#E5C060); color:#0F2557; font-weight:700; padding:10px 20px; border-radius:8px; font-size:14px; transition:all 0.2s; border:none; cursor:pointer; }
+  .btn-primary:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(201,168,76,0.4); }
+  .btn-secondary { background:white; color:#374151; font-weight:600; padding:10px 20px; border-radius:8px; font-size:14px; border:2px solid #E5E7EB; cursor:pointer; transition:all 0.2s; }
+  .btn-secondary:hover { border-color:#C9A84C; }
+  .btn-danger { background:#FEE2E2; color:#991B1B; font-weight:600; padding:8px 16px; border-radius:8px; font-size:13px; border:none; cursor:pointer; transition:background 0.2s; }
+  .btn-danger:hover { background:#FECACA; }
+
+  /* Modal */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:100; display:flex; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(2px); }
+  .modal-box { background:white; border-radius:16px; width:100%; max-width:560px; max-height:90vh; overflow-y:auto; box-shadow:0 25px 60px rgba(0,0,0,0.3); }
+
+  /* Stat card */
+  .stat-card { background:white; border-radius:14px; padding:20px; border:1px solid #F3F4F6; box-shadow:0 2px 8px rgba(0,0,0,0.04); }
+
+  /* Table */
+  .tbl th { background:#F8FAFC; color:#6B7280; font-size:11px; text-transform:uppercase; letter-spacing:.05em; padding:10px 14px; text-align:left; }
+  .tbl td { padding:12px 14px; font-size:13px; border-bottom:1px solid #F3F4F6; }
+  .tbl tr:hover td { background:#FAFBFF; }
+  .tbl tr { cursor:pointer; }
+
+  /* Toast */
+  #toast { position:fixed; bottom:24px; right:24px; z-index:999; transform:translateY(80px); transition:transform 0.3s; }
+  #toast.show { transform:translateY(0); }
+
+  /* Fade */
+  .fade-in { animation:fi 0.3s ease; }
+  @keyframes fi { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width:5px; height:5px; }
+  ::-webkit-scrollbar-track { background:#F1F5F9; }
+  ::-webkit-scrollbar-thumb { background:#CBD5E1; border-radius:9px; }
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- ═══════════════════════ LOGIN ═══════════════════════ -->
+<div id="login-screen" class="min-h-screen bg-navy flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+    <div class="text-center mb-8">
+      <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:linear-gradient(135deg,#C9A84C,#E5C060)">
+        <svg width="30" height="30" fill="none" stroke="#0F2557" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      </div>
+      <h1 class="text-2xl font-bold text-navy">Véri<span style="color:#C9A84C">Code</span></h1>
+      <p class="text-gray-500 text-sm mt-1">Accès Administration</p>
+    </div>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+        <input type="email" id="login-email" class="inp" placeholder="admin@verification.fr" value="admin@verification.fr">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Mot de passe</label>
+        <input type="password" id="login-pwd" class="inp" placeholder="••••••••" onkeydown="if(event.key==='Enter') doLogin()">
+      </div>
+      <div id="login-err" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm"></div>
+      <button onclick="doLogin()" class="btn-primary w-full py-3 text-base">Se connecter →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ APP ═══════════════════════ -->
+<div id="app" class="hidden">
+
+  <!-- Header -->
+  <header class="bg-navy fixed top-0 left-0 right-0 h-14 flex items-center justify-between px-4 z-50">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#C9A84C,#E5C060)">
+        <svg width="16" height="16" fill="none" stroke="#0F2557" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      </div>
+      <span class="text-white font-bold">Véri<span class="text-gold">Code</span> <span class="text-white/40 font-normal text-sm">— Administration</span></span>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="index.html" class="text-white/50 hover:text-gold text-sm transition-colors">← Site public</a>
+      <div class="w-px h-5 bg-white/20"></div>
+      <span id="admin-name-header" class="text-white/70 text-sm"></span>
+      <button onclick="doLogout()" class="text-white/50 hover:text-red-400 text-sm transition-colors ml-1">Déconnexion</button>
+    </div>
+  </header>
+
+  <!-- Body -->
+  <div class="flex pt-14 min-h-screen">
+
+    <!-- Sidebar -->
+    <aside class="bg-navy w-52 fixed left-0 top-14 bottom-0 flex flex-col py-6 px-3">
+      <div class="sidebar-link active" id="nav-dashboard" onclick="showView('dashboard')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Tableau de bord
+      </div>
+      <div class="sidebar-link" id="nav-submissions" onclick="showView('submissions')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        Demandes
+        <span id="pending-count" class="ml-auto text-xs bg-amber-400 text-amber-900 font-bold px-2 py-0.5 rounded-full hidden"></span>
+      </div>
+      <div class="sidebar-link" id="nav-types" onclick="showView('types')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/></svg>
+        Types de codes
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="ml-52 flex-1 p-6">
+
+      <!-- ── DASHBOARD ── -->
+      <div id="view-dashboard" class="fade-in">
+        <div class="flex items-center justify-between mb-6">
+          <h1 class="text-xl font-bold text-navy">Tableau de bord</h1>
+          <button onclick="loadDashboard()" class="text-sm text-gray-400 hover:text-navy flex items-center gap-1 transition-colors">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Actualiser
+          </button>
+        </div>
+
+        <!-- Stat cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="stat-card">
+            <p class="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Total demandes</p>
+            <p id="st-total" class="text-3xl font-extrabold text-navy">—</p>
+            <p id="st-today" class="text-xs text-gray-400 mt-1"></p>
+          </div>
+          <div class="stat-card">
+            <p class="text-xs text-amber-600 font-medium uppercase tracking-wider mb-1">En attente</p>
+            <p id="st-pending" class="text-3xl font-extrabold text-amber-600">—</p>
+            <p class="text-xs text-gray-400 mt-1">À traiter</p>
+          </div>
+          <div class="stat-card">
+            <p class="text-xs text-green-600 font-medium uppercase tracking-wider mb-1">Valides</p>
+            <p id="st-valid" class="text-3xl font-extrabold text-green-600">—</p>
+            <p class="text-xs text-gray-400 mt-1">Codes confirmés</p>
+          </div>
+          <div class="stat-card">
+            <p class="text-xs text-red-600 font-medium uppercase tracking-wider mb-1">Invalides</p>
+            <p id="st-invalid" class="text-3xl font-extrabold text-red-600">—</p>
+            <p class="text-xs text-gray-400 mt-1">Codes rejetés</p>
+          </div>
+        </div>
+
+        <!-- Wider row -->
+        <div class="grid grid-cols-3 gap-4 mb-6">
+          <div class="stat-card text-center">
+            <p class="text-xs text-blue-500 font-medium uppercase tracking-wider mb-1">En cours</p>
+            <p id="st-processing" class="text-2xl font-extrabold text-blue-600">—</p>
+          </div>
+          <div class="stat-card text-center">
+            <p class="text-xs text-orange-500 font-medium uppercase tracking-wider mb-1">Déjà utilisé</p>
+            <p id="st-used" class="text-2xl font-extrabold text-orange-600">—</p>
+          </div>
+          <div class="stat-card text-center">
+            <p class="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Expirés</p>
+            <p id="st-expired" class="text-2xl font-extrabold text-gray-600">—</p>
+          </div>
+        </div>
+
+        <!-- Chart + recent -->
+        <div class="grid lg:grid-cols-5 gap-6">
+          <!-- Chart -->
+          <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+            <h2 class="font-bold text-navy text-sm mb-4">Répartition par type</h2>
+            <div class="relative" style="height:220px">
+              <canvas id="type-chart"></canvas>
+            </div>
+            <div id="chart-legend" class="mt-4 space-y-2"></div>
+          </div>
+
+          <!-- Recent submissions -->
+          <div class="lg:col-span-3 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+              <h2 class="font-bold text-navy text-sm">Dernières demandes</h2>
+              <button onclick="showView('submissions')" class="text-xs text-gold font-medium hover:underline">Voir tout →</button>
+            </div>
+            <table class="tbl w-full">
+              <thead><tr>
+                <th>Dossier</th><th>Type</th><th>Code</th><th>Statut</th>
+              </tr></thead>
+              <tbody id="recent-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SUBMISSIONS ── -->
+      <div id="view-submissions" class="hidden fade-in">
+        <div class="flex items-center justify-between mb-5">
+          <h1 class="text-xl font-bold text-navy">Gestion des demandes</h1>
+          <span id="subs-total-label" class="text-sm text-gray-400"></span>
+        </div>
+
+        <!-- Filters -->
+        <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm mb-4 flex flex-wrap gap-3">
+          <input type="text" id="f-search" class="inp flex-1 min-w-48" placeholder="🔍 Rechercher dossier, code, nom…"
+            oninput="debounceLoad()">
+          <select id="f-status" class="inp w-52" onchange="loadSubmissions()">
+            <option value="">Tous les statuts</option>
+            <option value="pending">En attente</option>
+            <option value="processing">Vérification en cours</option>
+            <option value="valid">Valide</option>
+            <option value="invalid">Invalide</option>
+            <option value="used">Déjà utilisé</option>
+            <option value="expired">Expiré</option>
+            <option value="completed">Traitement terminé</option>
+          </select>
+          <select id="f-type" class="inp w-52" onchange="loadSubmissions()">
+            <option value="">Tous les types</option>
+          </select>
+          <button onclick="clearFilters()" class="btn-secondary text-sm px-4">Réinitialiser</button>
+        </div>
+
+        <!-- Table -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <table class="tbl w-full">
+            <thead><tr>
+              <th>Dossier</th>
+              <th>Type</th>
+              <th>Code</th>
+              <th>Nom</th>
+              <th>Soumis le</th>
+              <th>Statut</th>
+            </tr></thead>
+            <tbody id="subs-tbody"></tbody>
+          </table>
+          <div id="subs-empty" class="hidden text-center py-16 text-gray-400">
+            <svg class="mx-auto mb-3" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+            <p>Aucune demande trouvée</p>
+          </div>
+          <!-- Pagination -->
+          <div id="subs-pagination" class="hidden flex items-center justify-between px-4 py-3 border-t border-gray-100 text-sm">
+            <button id="pg-prev" onclick="changePage(-1)" class="px-3 py-1.5 rounded-lg border text-gray-600 hover:bg-gray-50 disabled:opacity-30">← Précédent</button>
+            <span id="pg-info" class="text-gray-500"></span>
+            <button id="pg-next" onclick="changePage(1)" class="px-3 py-1.5 rounded-lg border text-gray-600 hover:bg-gray-50 disabled:opacity-30">Suivant →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CODE TYPES ── -->
+      <div id="view-types" class="hidden fade-in">
+        <div class="flex items-center justify-between mb-5">
+          <h1 class="text-xl font-bold text-navy">Types de codes</h1>
+          <button onclick="openTypeModal()" class="btn-primary text-sm">+ Ajouter un type</button>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <table class="tbl w-full">
+            <thead><tr>
+              <th>Nom</th><th>Description</th><th>Statut</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="types-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SUBMISSION MODAL ═══════════════════════ -->
+<div id="sub-modal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="flex items-center justify-between p-6 border-b border-gray-100">
+      <div>
+        <h2 class="font-bold text-navy text-lg">Détail de la demande</h2>
+        <p id="m-dossier" class="text-sm font-mono text-gray-500 mt-0.5"></p>
+      </div>
+      <button onclick="closeSubModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600">✕</button>
+    </div>
+    <div class="p-6 space-y-5">
+      <!-- Info grid -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-gray-50 rounded-xl p-3">
+          <p class="text-xs text-gray-400 mb-1">Type de code</p>
+          <p id="m-type" class="font-semibold text-navy text-sm"></p>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-3">
+          <p class="text-xs text-gray-400 mb-1">Code soumis</p>
+          <p id="m-code" class="font-mono font-bold text-navy text-sm break-all"></p>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-3">
+          <p class="text-xs text-gray-400 mb-1">Nom</p>
+          <p id="m-name" class="font-semibold text-navy text-sm"></p>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-3">
+          <p class="text-xs text-gray-400 mb-1">Email</p>
+          <p id="m-email" class="font-semibold text-navy text-sm break-all"></p>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-3">
+          <p class="text-xs text-gray-400 mb-1">Soumis le</p>
+          <p id="m-date" class="font-semibold text-navy text-sm"></p>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-3">
+          <p class="text-xs text-gray-400 mb-1">Mis à jour</p>
+          <p id="m-updated" class="font-semibold text-navy text-sm"></p>
+        </div>
+      </div>
+
+      <hr class="border-gray-100">
+
+      <!-- Edit zone -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Statut <span class="text-red-500">*</span></label>
+        <select id="m-status" class="inp">
+          <option value="pending">⏳ En attente</option>
+          <option value="processing">🔍 Vérification en cours</option>
+          <option value="valid">✅ Valide</option>
+          <option value="invalid">❌ Invalide</option>
+          <option value="used">⚠️ Déjà utilisé</option>
+          <option value="expired">🕒 Expiré</option>
+          <option value="completed">✔️ Traitement terminé</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Commentaire administrateur</label>
+        <textarea id="m-comment" class="inp h-24 resize-none" placeholder="Ex : Code vérifié avec succès. Valeur : 50 €"></textarea>
+      </div>
+      <div id="sub-modal-err" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm"></div>
+    </div>
+    <div class="flex gap-3 p-6 pt-0">
+      <button onclick="saveSubmission()" class="btn-primary flex-1 py-3">Enregistrer les modifications</button>
+      <button onclick="closeSubModal()" class="btn-secondary py-3 px-6">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ TYPE MODAL ═══════════════════════ -->
+<div id="type-modal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="flex items-center justify-between p-6 border-b border-gray-100">
+      <h2 id="type-modal-title" class="font-bold text-navy text-lg">Nouveau type de code</h2>
+      <button onclick="closeTypeModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400">✕</button>
+    </div>
+    <div class="p-6 space-y-4">
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Nom <span class="text-red-500">*</span></label>
+        <input type="text" id="tm-name" class="inp" placeholder="Ex : Carte cadeau Amazon">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+        <input type="text" id="tm-desc" class="inp" placeholder="Description courte (optionnel)">
+      </div>
+      <div class="flex items-center gap-3">
+        <input type="checkbox" id="tm-active" class="w-4 h-4 rounded" checked>
+        <label for="tm-active" class="text-sm font-medium text-gray-700">Type actif (visible dans le formulaire)</label>
+      </div>
+      <div id="type-modal-err" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm"></div>
+    </div>
+    <div class="flex gap-3 p-6 pt-0">
+      <button onclick="saveType()" class="btn-primary flex-1 py-3">Enregistrer</button>
+      <button onclick="closeTypeModal()" class="btn-secondary py-3 px-6">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ TOAST ═══════════════════════ -->
+<div id="toast" class="bg-green-600 text-white px-5 py-3 rounded-xl shadow-xl text-sm font-medium flex items-center gap-2">
+  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+  <span id="toast-msg">Modification enregistrée</span>
+</div>
+
+<script>
+/* ── Globals ── */
+let TOKEN = localStorage.getItem('vs_admin_token') || '';
+let currentSubId = null;
+let currentTypeId = null;
+let subPage = 1;
+let subPages = 1;
+let typeChart = null;
+let debTimer = null;
+
+const STATUS_LABELS = {
+  pending:'En attente', processing:'Vérification en cours', valid:'Valide',
+  invalid:'Invalide', used:'Déjà utilisé', expired:'Expiré', completed:'Traitement terminé'
+};
+const STATUS_ICONS = { pending:'⏳', processing:'🔍', valid:'✅', invalid:'❌', used:'⚠️', expired:'🕒', completed:'✔️' };
+
+/* ── Init ── */
+window.onload = () => {
+  if (TOKEN) {
+    try {
+      const p = JSON.parse(atob(TOKEN.split('.')[1]));
+      if (p.exp * 1000 > Date.now()) { enterApp(p.name); return; }
+    } catch {}
+    localStorage.removeItem('vs_admin_token');
+    TOKEN = '';
+  }
+};
+
+/* ── Auth ── */
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pwd   = document.getElementById('login-pwd').value;
+  const err   = document.getElementById('login-err');
+  err.classList.add('hidden');
+  try {
+    const r = await api('/api/auth/login', 'POST', { email, password: pwd }, false);
+    TOKEN = r.token;
+    localStorage.setItem('vs_admin_token', TOKEN);
+    enterApp(r.admin.name);
+  } catch (e) {
+    err.textContent = e.message;
+    err.classList.remove('hidden');
+  }
+}
+
+function enterApp(name) {
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  document.getElementById('admin-name-header').textContent = name;
+  showView('dashboard');
+}
+
+function doLogout() {
+  TOKEN = '';
+  localStorage.removeItem('vs_admin_token');
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('login-screen').classList.remove('hidden');
+}
+
+/* ── API ── */
+async function api(url, method = 'GET', body = null, auth = true) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if (auth) opts.headers['Authorization'] = 'Bearer ' + TOKEN;
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(url, opts);
+  const d = await r.json();
+  if (!r.ok) throw new Error(d.error || 'Erreur serveur');
+  return d;
+}
+
+/* ── Views ── */
+function showView(v) {
+  ['dashboard','submissions','types'].forEach(x => {
+    document.getElementById('view-'+x).classList.toggle('hidden', x !== v);
+    document.getElementById('nav-'+x).classList.toggle('active', x === v);
+  });
+  if (v === 'dashboard')   loadDashboard();
+  if (v === 'submissions') { subPage = 1; loadSubmissions(); loadTypeFilter(); }
+  if (v === 'types')       loadTypes();
+}
+
+/* ── Helpers ── */
+function badge(status) {
+  return `<span class="badge badge-${status}">${STATUS_ICONS[status]||''} ${STATUS_LABELS[status]||status}</span>`;
+}
+function fmt(dt) {
+  if (!dt) return '—';
+  return new Date(dt).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+function fmtShort(dt) {
+  if (!dt) return '—';
+  return new Date(dt).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'});
+}
+function showToast(msg = 'Modification enregistrée', ok = true) {
+  const t = document.getElementById('toast');
+  t.className = `${ok ? 'bg-green-600' : 'bg-red-600'} text-white px-5 py-3 rounded-xl shadow-xl text-sm font-medium flex items-center gap-2`;
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+/* ── Dashboard ── */
+async function loadDashboard() {
+  try {
+    const d = await api('/api/admin/stats');
+    document.getElementById('st-total').textContent     = d.total;
+    document.getElementById('st-pending').textContent   = d.pending;
+    document.getElementById('st-valid').textContent     = d.valid;
+    document.getElementById('st-invalid').textContent   = d.invalid;
+    document.getElementById('st-processing').textContent= d.processing;
+    document.getElementById('st-used').textContent      = d.used;
+    document.getElementById('st-expired').textContent   = d.expired;
+    document.getElementById('st-today').textContent     = `${d.today} aujourd'hui`;
+
+    // Pending count badge in sidebar
+    const pc = document.getElementById('pending-count');
+    if (d.pending > 0) { pc.textContent = d.pending; pc.classList.remove('hidden'); }
+    else { pc.classList.add('hidden'); }
+
+    // Chart
+    const colors = ['#3B82F6','#F59E0B','#10B981','#EF4444','#8B5CF6','#F97316','#06B6D4','#EC4899'];
+    const labels = d.byType.map(t => t.name);
+    const counts = d.byType.map(t => t.n);
+    if (typeChart) { typeChart.destroy(); typeChart = null; }
+    if (counts.some(c => c > 0)) {
+      typeChart = new Chart(document.getElementById('type-chart'), {
+        type: 'doughnut',
+        data: { labels, datasets: [{ data: counts, backgroundColor: colors.slice(0, labels.length), borderWidth: 2, borderColor: 'white' }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '65%' }
+      });
+      document.getElementById('chart-legend').innerHTML = labels.map((l,i) =>
+        `<div class="flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full" style="background:${colors[i]}"></div><span class="text-gray-600">${l}</span></div>
+          <span class="font-bold text-navy">${counts[i]}</span>
+        </div>`
+      ).join('');
+    } else {
+      document.getElementById('chart-legend').innerHTML = '<p class="text-xs text-gray-400 text-center">Aucune donnée</p>';
+    }
+
+    // Recent table
+    document.getElementById('recent-tbody').innerHTML = d.recent.map(s => `
+      <tr onclick="openSubModal(${s.id})">
+        <td><span class="font-mono font-bold text-navy text-xs">${s.dossier_number}</span></td>
+        <td class="text-gray-500 text-xs">${s.code_type_name||'—'}</td>
+        <td><span class="font-mono text-xs bg-gray-100 px-2 py-1 rounded">${s.code}</span></td>
+        <td>${badge(s.status)}</td>
+      </tr>
+    `).join('') || '<tr><td colspan="4" class="text-center text-gray-400 py-6">Aucune demande</td></tr>';
+
+  } catch (e) { console.error(e); }
+}
+
+/* ── Submissions ── */
+async function loadSubmissions() {
+  const search  = document.getElementById('f-search').value.trim();
+  const status  = document.getElementById('f-status').value;
+  const type_id = document.getElementById('f-type').value;
+  let url = `/api/admin/submissions?page=${subPage}&limit=25`;
+  if (search)  url += '&search=' + encodeURIComponent(search);
+  if (status)  url += '&status=' + status;
+  if (type_id) url += '&type_id=' + type_id;
+
+  try {
+    const d = await api(url);
+    subPages = d.pages;
+    document.getElementById('subs-total-label').textContent = `${d.total} demande${d.total!==1?'s':''}`;
+
+    const tbody = document.getElementById('subs-tbody');
+    const empty = document.getElementById('subs-empty');
+    const pg    = document.getElementById('subs-pagination');
+
+    if (!d.submissions.length) {
+      tbody.innerHTML = '';
+      empty.classList.remove('hidden');
+      pg.classList.add('hidden');
+      return;
+    }
+    empty.classList.add('hidden');
+    tbody.innerHTML = d.submissions.map(s => `
+      <tr onclick="openSubModal(${s.id})">
+        <td><span class="font-mono font-bold text-navy text-xs">${s.dossier_number}</span></td>
+        <td class="text-gray-500 text-xs">${s.code_type_name||'—'}</td>
+        <td><span class="font-mono text-xs bg-gray-100 px-2 py-1 rounded">${s.code}</span></td>
+        <td class="text-gray-600 text-xs">${s.name||'—'}</td>
+        <td class="text-gray-400 text-xs">${fmtShort(s.created_at)}</td>
+        <td>${badge(s.status)}</td>
+      </tr>
+    `).join('');
+
+    // Pagination
+    if (d.pages > 1) {
+      pg.classList.remove('hidden');
+      document.getElementById('pg-info').textContent = `Page ${d.page} / ${d.pages}`;
+      document.getElementById('pg-prev').disabled = d.page <= 1;
+      document.getElementById('pg-next').disabled = d.page >= d.pages;
+    } else { pg.classList.add('hidden'); }
+  } catch (e) { console.error(e); }
+}
+
+function changePage(dir) {
+  subPage = Math.max(1, Math.min(subPages, subPage + dir));
+  loadSubmissions();
+}
+
+function clearFilters() {
+  document.getElementById('f-search').value = '';
+  document.getElementById('f-status').value = '';
+  document.getElementById('f-type').value   = '';
+  subPage = 1;
+  loadSubmissions();
+}
+
+function debounceLoad() {
+  clearTimeout(debTimer);
+  debTimer = setTimeout(() => { subPage = 1; loadSubmissions(); }, 350);
+}
+
+async function loadTypeFilter() {
+  try {
+    const d = await api('/api/admin/code-types');
+    const sel = document.getElementById('f-type');
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">Tous les types</option>';
+    d.types.forEach(t => {
+      const o = document.createElement('option');
+      o.value = t.id; o.textContent = t.name;
+      if (t.id == cur) o.selected = true;
+      sel.appendChild(o);
+    });
+  } catch {}
+}
+
+/* ── Submission Modal ── */
+async function openSubModal(id) {
+  currentSubId = id;
+  document.getElementById('sub-modal-err').classList.add('hidden');
+  try {
+    const d = await api('/api/admin/submissions/' + id);
+    const s = d.submission;
+    document.getElementById('m-dossier').textContent = s.dossier_number;
+    document.getElementById('m-type').textContent    = s.code_type_name || '—';
+    document.getElementById('m-code').textContent    = s.code;
+    document.getElementById('m-name').textContent    = s.name || '—';
+    document.getElementById('m-email').textContent   = s.email || '—';
+    document.getElementById('m-date').textContent    = fmt(s.created_at);
+    document.getElementById('m-updated').textContent = fmt(s.updated_at);
+    document.getElementById('m-status').value        = s.status;
+    document.getElementById('m-comment').value       = s.admin_comment || '';
+    document.getElementById('sub-modal').classList.remove('hidden');
+  } catch (e) { showToast(e.message, false); }
+}
+
+function closeSubModal() {
+  document.getElementById('sub-modal').classList.add('hidden');
+  currentSubId = null;
+}
+
+async function saveSubmission() {
+  const status  = document.getElementById('m-status').value;
+  const comment = document.getElementById('m-comment').value.trim();
+  const errEl   = document.getElementById('sub-modal-err');
+  errEl.classList.add('hidden');
+  try {
+    await api('/api/admin/submissions/' + currentSubId, 'PUT', { status, admin_comment: comment });
+    showToast('Statut mis à jour avec succès');
+    closeSubModal();
+    if (!document.getElementById('view-submissions').classList.contains('hidden')) loadSubmissions();
+    if (!document.getElementById('view-dashboard').classList.contains('hidden'))   loadDashboard();
+  } catch (e) {
+    errEl.textContent = e.message;
+    errEl.classList.remove('hidden');
+  }
+}
+
+/* ── Code Types ── */
+async function loadTypes() {
+  try {
+    const d = await api('/api/admin/code-types');
+    document.getElementById('types-tbody').innerHTML = d.types.map(t => `
+      <tr>
+        <td><span class="font-semibold text-navy">${t.name}</span></td>
+        <td class="text-gray-500 text-sm">${t.description || '—'}</td>
+        <td>
+          <span class="badge ${t.active ? 'badge-valid' : 'badge-expired'}">
+            ${t.active ? '✓ Actif' : '✗ Inactif'}
+          </span>
+        </td>
+        <td>
+          <div class="flex gap-2">
+            <button onclick="openTypeModal(${t.id})" class="text-xs px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 font-medium hover:bg-blue-100 transition-colors">Modifier</button>
+            <button onclick="deleteType(${t.id},'${t.name.replace(/'/g,"\\'")}') " class="btn-danger text-xs">Supprimer</button>
+          </div>
+        </td>
+      </tr>
+    `).join('') || '<tr><td colspan="4" class="text-center py-8 text-gray-400">Aucun type configuré</td></tr>';
+  } catch (e) { console.error(e); }
+}
+
+async function openTypeModal(id = null) {
+  currentTypeId = id;
+  document.getElementById('type-modal-title').textContent = id ? 'Modifier le type' : 'Nouveau type de code';
+  document.getElementById('tm-name').value   = '';
+  document.getElementById('tm-desc').value   = '';
+  document.getElementById('tm-active').checked = true;
+  document.getElementById('type-modal-err').classList.add('hidden');
+
+  if (id) {
+    try {
+      const d = await api('/api/admin/code-types');
+      const t = d.types.find(x => x.id === id);
+      if (t) {
+        document.getElementById('tm-name').value   = t.name;
+        document.getElementById('tm-desc').value   = t.description || '';
+        document.getElementById('tm-active').checked = !!t.active;
+      }
+    } catch {}
+  }
+  document.getElementById('type-modal').classList.remove('hidden');
+}
+
+function closeTypeModal() {
+  document.getElementById('type-modal').classList.add('hidden');
+  currentTypeId = null;
+}
+
+async function saveType() {
+  const name   = document.getElementById('tm-name').value.trim();
+  const desc   = document.getElementById('tm-desc').value.trim();
+  const active = document.getElementById('tm-active').checked;
+  const errEl  = document.getElementById('type-modal-err');
+  errEl.classList.add('hidden');
+
+  if (!name) { errEl.textContent = 'Le nom est requis.'; errEl.classList.remove('hidden'); return; }
+
+  try {
+    if (currentTypeId) {
+      await api('/api/admin/code-types/' + currentTypeId, 'PUT', { name, description: desc, active });
+    } else {
+      await api('/api/admin/code-types', 'POST', { name, description: desc });
+    }
+    showToast(currentTypeId ? 'Type mis à jour' : 'Type ajouté avec succès');
+    closeTypeModal();
+    loadTypes();
+  } catch (e) {
+    errEl.textContent = e.message;
+    errEl.classList.remove('hidden');
+  }
+}
+
+async function deleteType(id, name) {
+  if (!confirm(`Supprimer le type "${name}" ?\n\nCette action est irréversible.`)) return;
+  try {
+    await api('/api/admin/code-types/' + id, 'DELETE');
+    showToast('Type supprimé');
+    loadTypes();
+  } catch (e) { showToast(e.message, false); }
+}
+
+/* ── Close modals on overlay click ── */
+document.getElementById('sub-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeSubModal(); });
+document.getElementById('type-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeTypeModal(); });
+</script>
+</body>
+</html>

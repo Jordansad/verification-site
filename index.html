@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VériCode — Plateforme de vérification de codes</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { font-family: 'Inter', sans-serif; }
+  :root { --navy: #0F2557; --gold: #C9A84C; }
+  .bg-navy { background-color: #0F2557; }
+  .text-navy { color: #0F2557; }
+  .text-gold { color: #C9A84C; }
+  .border-gold { border-color: #C9A84C; }
+  .ring-gold:focus { outline: none; box-shadow: 0 0 0 3px rgba(201,168,76,0.3); }
+
+  /* Hero gradient */
+  .hero-gradient {
+    background: linear-gradient(135deg, #0A1A3D 0%, #0F2557 50%, #162E68 100%);
+  }
+
+  /* Status badges */
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+  .badge-pending    { background: #FEF3C7; color: #92400E; }
+  .badge-processing { background: #DBEAFE; color: #1E40AF; }
+  .badge-valid      { background: #D1FAE5; color: #065F46; }
+  .badge-invalid    { background: #FEE2E2; color: #991B1B; }
+  .badge-used       { background: #FFEDD5; color: #9A3412; }
+  .badge-expired    { background: #F3F4F6; color: #374151; }
+  .badge-completed  { background: #CCFBF1; color: #134E4A; }
+
+  /* Smooth transitions */
+  .fade-in { animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Button */
+  .btn-gold {
+    background: linear-gradient(135deg, #C9A84C, #E5C060);
+    color: #0F2557;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(201,168,76,0.35); }
+  .btn-gold:active { transform: translateY(0); }
+
+  /* Input */
+  .input-field {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #E5E7EB;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: border-color 0.2s;
+    background: white;
+  }
+  .input-field:focus { outline: none; border-color: #C9A84C; box-shadow: 0 0 0 3px rgba(201,168,76,0.15); }
+
+  /* Step indicators */
+  .step-dot { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+
+  /* Nav active link */
+  .nav-active { color: #C9A84C !important; border-bottom: 2px solid #C9A84C; }
+
+  /* Pulse dot for "En attente" */
+  .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- ═══════════════════════ NAVIGATION ═══════════════════════ -->
+<nav class="bg-navy fixed w-full top-0 z-50 shadow-lg">
+  <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg,#C9A84C,#E5C060)">
+        <svg width="20" height="20" fill="none" stroke="#0F2557" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      </div>
+      <span class="text-white font-bold text-lg tracking-tight">Véri<span class="text-gold">Code</span></span>
+    </div>
+    <div class="flex items-center gap-1">
+      <button onclick="showView('submit')" id="nav-submit"
+        class="nav-active text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-white/10 transition-colors">
+        Soumettre un code
+      </button>
+      <button onclick="showView('track')" id="nav-track"
+        class="text-gray-300 text-sm font-medium px-4 py-2 rounded-lg hover:bg-white/10 transition-colors">
+        Suivre ma demande
+      </button>
+      <a href="admin.html"
+        class="ml-3 text-xs text-gray-400 hover:text-gold transition-colors px-3 py-2 rounded-lg hover:bg-white/5">
+        Administration →
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<section class="hero-gradient pt-28 pb-16">
+  <div class="max-w-5xl mx-auto px-4 text-center">
+    <div class="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-2 mb-6">
+      <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+      <span class="text-white/80 text-sm">Service de vérification disponible</span>
+    </div>
+    <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
+      Vérifiez vos codes<br><span class="text-gold">en toute confiance</span>
+    </h1>
+    <p class="text-white/70 text-lg max-w-xl mx-auto">
+      Soumettez votre code et notre équipe le vérifie manuellement. Résultat disponible sous quelques heures.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════ MAIN CONTENT ═══════════════════════ -->
+<main class="max-w-2xl mx-auto px-4 -mt-6 pb-20">
+
+  <!-- ── SUBMIT VIEW ── -->
+  <div id="view-submit" class="fade-in">
+
+    <!-- Submit form card -->
+    <div id="submit-form-card" class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(201,168,76,0.12)">
+          <svg width="20" height="20" fill="none" stroke="#C9A84C" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-navy">Soumettre un code</h2>
+          <p class="text-sm text-gray-500">Un numéro de dossier vous sera attribué</p>
+        </div>
+      </div>
+
+      <div class="space-y-5">
+        <!-- Type de code -->
+        <div>
+          <label class="block text-sm font-600 text-gray-700 mb-2">
+            Type de code <span class="text-red-500">*</span>
+          </label>
+          <select id="code-type" class="input-field" required>
+            <option value="">Sélectionnez un type…</option>
+          </select>
+        </div>
+
+        <!-- Code -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            Code à vérifier <span class="text-red-500">*</span>
+          </label>
+          <input type="text" id="code-input" class="input-field font-mono uppercase tracking-widest text-lg"
+            placeholder="Ex : XXXX-XXXX-XXXX" maxlength="64" autocomplete="off"
+            oninput="this.value=this.value.toUpperCase()">
+          <p class="text-xs text-gray-400 mt-1">Le code est automatiquement mis en majuscules</p>
+        </div>
+
+        <!-- Nom (optionnel) -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            Nom complet <span class="text-gray-400 font-normal">(optionnel)</span>
+          </label>
+          <input type="text" id="name-input" class="input-field" placeholder="Votre nom">
+        </div>
+
+        <!-- Email (optionnel) -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            Email <span class="text-gray-400 font-normal">(optionnel)</span>
+          </label>
+          <input type="email" id="email-input" class="input-field" placeholder="votre@email.com">
+        </div>
+
+        <!-- Error message -->
+        <div id="submit-error" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm"></div>
+
+        <!-- Submit button -->
+        <button onclick="submitCode()" id="submit-btn"
+          class="btn-gold w-full py-4 rounded-xl text-base font-bold shadow-lg mt-2">
+          Soumettre pour vérification →
+        </button>
+
+        <p class="text-center text-xs text-gray-400">
+          Vous déjà soumis un code ?
+          <button onclick="showView('track')" class="text-gold font-medium hover:underline">Suivre ma demande</button>
+        </p>
+      </div>
+    </div>
+
+    <!-- Success card (hidden) -->
+    <div id="submit-success" class="hidden bg-white rounded-2xl shadow-xl p-8 border border-green-100 fade-in">
+      <div class="text-center">
+        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg width="36" height="36" fill="none" stroke="#065F46" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <h2 class="text-2xl font-bold text-navy mb-2">Demande enregistrée !</h2>
+        <p class="text-gray-500 mb-6">Votre code a été soumis avec succès. Conservez ce numéro de dossier.</p>
+
+        <div class="bg-navy rounded-xl p-6 mb-6">
+          <p class="text-white/60 text-sm mb-2">Numéro de dossier</p>
+          <p id="success-dossier" class="text-gold text-3xl font-extrabold tracking-widest font-mono"></p>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-left">
+          <div class="flex gap-3">
+            <svg class="shrink-0 mt-0.5" width="18" height="18" fill="none" stroke="#B45309" stroke-width="2" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <p class="text-sm text-amber-800">Notre équipe vérifiera votre code manuellement. Le résultat sera disponible sur la page "Suivre ma demande" avec votre numéro de dossier.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <button onclick="goTrack()" class="btn-gold flex-1 py-3 rounded-xl font-bold">
+            Suivre ma demande →
+          </button>
+          <button onclick="resetSubmit()" class="flex-1 py-3 rounded-xl border-2 border-gray-200 font-semibold text-gray-600 hover:bg-gray-50 transition-colors">
+            Nouveau code
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TRACK VIEW ── -->
+  <div id="view-track" class="hidden fade-in">
+
+    <!-- Search card -->
+    <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(15,37,87,0.08)">
+          <svg width="20" height="20" fill="none" stroke="#0F2557" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-navy">Suivre ma demande</h2>
+          <p class="text-sm text-gray-500">Entrez votre numéro de dossier</p>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Numéro de dossier</label>
+          <input type="text" id="track-input" class="input-field font-mono uppercase tracking-widest text-lg"
+            placeholder="VS-XXXXXXXX" maxlength="11"
+            oninput="this.value=this.value.toUpperCase()"
+            onkeydown="if(event.key==='Enter') trackCode()">
+        </div>
+        <div id="track-error" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm"></div>
+        <button onclick="trackCode()" class="btn-gold w-full py-4 rounded-xl text-base font-bold shadow-lg">
+          Rechercher →
+        </button>
+      </div>
+    </div>
+
+    <!-- Result card (hidden) -->
+    <div id="track-result" class="hidden mt-5 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden fade-in">
+      <!-- Status header -->
+      <div id="result-header" class="p-6 border-b border-gray-100">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Numéro de dossier</p>
+            <p id="result-dossier" class="font-mono font-bold text-navy text-xl"></p>
+          </div>
+          <div id="result-badge"></div>
+        </div>
+      </div>
+      <!-- Details -->
+      <div class="p-6 space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-gray-50 rounded-xl p-4">
+            <p class="text-xs text-gray-500 mb-1">Type de code</p>
+            <p id="result-type" class="font-semibold text-navy text-sm"></p>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-4">
+            <p class="text-xs text-gray-500 mb-1">Code soumis</p>
+            <p id="result-code" class="font-mono font-bold text-navy text-sm break-all"></p>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-4">
+            <p class="text-xs text-gray-500 mb-1">Date de soumission</p>
+            <p id="result-date" class="font-semibold text-navy text-sm"></p>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-4">
+            <p class="text-xs text-gray-500 mb-1">Dernière mise à jour</p>
+            <p id="result-updated" class="font-semibold text-navy text-sm"></p>
+          </div>
+        </div>
+        <!-- Admin comment -->
+        <div id="result-comment-block" class="hidden">
+          <div class="bg-blue-50 border border-blue-100 rounded-xl p-4">
+            <p class="text-xs text-blue-500 font-medium mb-2 flex items-center gap-1">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+              Commentaire de l'administrateur
+            </p>
+            <p id="result-comment" class="text-sm text-blue-900 font-medium"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ═══════════════════════ HOW IT WORKS ═══════════════════════ -->
+<section class="bg-white py-16 border-t border-gray-100">
+  <div class="max-w-5xl mx-auto px-4">
+    <h2 class="text-2xl font-bold text-navy text-center mb-10">Comment ça fonctionne ?</h2>
+    <div class="grid md:grid-cols-2 gap-12 max-w-2xl mx-auto">
+      <div class="text-center">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:rgba(201,168,76,0.12)">
+          <span class="text-2xl font-extrabold text-gold">1</span>
+        </div>
+        <h3 class="font-bold text-navy mb-2">Soumettez votre code</h3>
+        <p class="text-gray-500 text-sm">Renseignez le type de code et saisissez le code à vérifier dans le formulaire. Un numéro de dossier vous est attribué.</p>
+      </div>
+      <div class="text-center">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:rgba(6,95,70,0.08)">
+          <span class="text-2xl font-extrabold text-green-700">2</span>
+        </div>
+        <h3 class="font-bold text-navy mb-2">Consultez le résultat</h3>
+        <p class="text-gray-500 text-sm">Revenez sur "Suivre ma demande" avec votre numéro de dossier pour voir le statut et le commentaire associé.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer class="bg-navy text-white py-10">
+  <div class="max-w-5xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg,#C9A84C,#E5C060)">
+        <svg width="16" height="16" fill="none" stroke="#0F2557" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      </div>
+      <span class="font-bold">Véri<span class="text-gold">Code</span></span>
+    </div>
+    <p class="text-white/40 text-sm">© 2024 VériCode — Plateforme de vérification de codes</p>
+    <a href="admin.html" class="text-white/40 text-sm hover:text-gold transition-colors">Espace administrateur</a>
+  </div>
+</footer>
+
+<script>
+/* ── Status helpers ── */
+const STATUS_LABELS = {
+  pending:    'En attente',
+  processing: 'Vérification en cours',
+  valid:      'Valide',
+  invalid:    'Invalide',
+  used:       'Déjà utilisé',
+  expired:    'Expiré',
+  completed:  'Traitement terminé'
+};
+
+const STATUS_ICONS = {
+  pending:    '⏳',
+  processing: '🔍',
+  valid:      '✅',
+  invalid:    '❌',
+  used:       '⚠️',
+  expired:    '🕒',
+  completed:  '✔️'
+};
+
+function statusBadge(status) {
+  return `<span class="badge badge-${status}">${STATUS_ICONS[status] || ''} ${STATUS_LABELS[status] || status}</span>`;
+}
+
+function formatDate(dt) {
+  if (!dt) return '—';
+  return new Date(dt).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+/* ── Nav ── */
+let currentView = 'submit';
+
+function showView(view) {
+  currentView = view;
+  document.getElementById('view-submit').classList.toggle('hidden', view !== 'submit');
+  document.getElementById('view-track').classList.toggle('hidden', view !== 'track');
+  document.getElementById('nav-submit').className = view === 'submit'
+    ? 'nav-active text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-white/10 transition-colors'
+    : 'text-gray-300 text-sm font-medium px-4 py-2 rounded-lg hover:bg-white/10 transition-colors';
+  document.getElementById('nav-track').className = view === 'track'
+    ? 'nav-active text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-white/10 transition-colors'
+    : 'text-gray-300 text-sm font-medium px-4 py-2 rounded-lg hover:bg-white/10 transition-colors';
+}
+
+/* ── Load code types ── */
+async function loadTypes() {
+  try {
+    const res = await fetch('/api/code-types');
+    const { types } = await res.json();
+    const sel = document.getElementById('code-type');
+    types.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t.id;
+      opt.textContent = t.name;
+      sel.appendChild(opt);
+    });
+  } catch (e) { console.error('Erreur chargement types', e); }
+}
+
+/* ── Submit ── */
+async function submitCode() {
+  const type = document.getElementById('code-type').value;
+  const code = document.getElementById('code-input').value.trim();
+  const name = document.getElementById('name-input').value.trim();
+  const email = document.getElementById('email-input').value.trim();
+  const errEl = document.getElementById('submit-error');
+
+  errEl.classList.add('hidden');
+
+  if (!type) { showErr(errEl, 'Veuillez sélectionner un type de code.'); return; }
+  if (!code) { showErr(errEl, 'Veuillez saisir votre code.'); return; }
+  if (code.length < 3) { showErr(errEl, 'Le code doit contenir au moins 3 caractères.'); return; }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours…';
+
+  try {
+    const res = await fetch('/api/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code_type_id: +type, code, name: name || null, email: email || null })
+    });
+    const data = await res.json();
+    if (!res.ok) { showErr(errEl, data.error || 'Erreur lors de la soumission.'); return; }
+
+    document.getElementById('success-dossier').textContent = data.dossier;
+    document.getElementById('submit-form-card').classList.add('hidden');
+    document.getElementById('submit-success').classList.remove('hidden');
+    window._lastDossier = data.dossier;
+  } catch {
+    showErr(errEl, 'Erreur de connexion. Réessayez dans un instant.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Soumettre pour vérification →';
+  }
+}
+
+function showErr(el, msg) {
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+
+function resetSubmit() {
+  document.getElementById('submit-form-card').classList.remove('hidden');
+  document.getElementById('submit-success').classList.add('hidden');
+  document.getElementById('code-input').value = '';
+  document.getElementById('name-input').value = '';
+  document.getElementById('email-input').value = '';
+  document.getElementById('code-type').value = '';
+  document.getElementById('submit-error').classList.add('hidden');
+}
+
+function goTrack() {
+  if (window._lastDossier) document.getElementById('track-input').value = window._lastDossier;
+  showView('track');
+  if (window._lastDossier) trackCode();
+}
+
+/* ── Track ── */
+async function trackCode() {
+  const dossier = document.getElementById('track-input').value.trim().toUpperCase();
+  const errEl = document.getElementById('track-error');
+  const resultEl = document.getElementById('track-result');
+  errEl.classList.add('hidden');
+  resultEl.classList.add('hidden');
+
+  if (!dossier) { showErr(errEl, 'Veuillez saisir un numéro de dossier.'); return; }
+
+  try {
+    const res = await fetch('/api/track/' + encodeURIComponent(dossier));
+    const data = await res.json();
+    if (!res.ok) { showErr(errEl, data.error || 'Dossier introuvable.'); return; }
+
+    const s = data.submission;
+    document.getElementById('result-dossier').textContent = s.dossier_number;
+    document.getElementById('result-badge').innerHTML = statusBadge(s.status);
+    document.getElementById('result-type').textContent = s.code_type_name || '—';
+    document.getElementById('result-code').textContent = s.code;
+    document.getElementById('result-date').textContent = formatDate(s.created_at);
+    document.getElementById('result-updated').textContent = formatDate(s.updated_at);
+
+    const commentBlock = document.getElementById('result-comment-block');
+    if (s.admin_comment) {
+      document.getElementById('result-comment').textContent = s.admin_comment;
+      commentBlock.classList.remove('hidden');
+    } else {
+      commentBlock.classList.add('hidden');
+    }
+
+    resultEl.classList.remove('hidden');
+    resultEl.classList.add('fade-in');
+  } catch {
+    showErr(errEl, 'Erreur de connexion. Réessayez dans un instant.');
+  }
+}
+
+/* ── Init ── */
+loadTypes();
+</script>
+</body>
+</html>
