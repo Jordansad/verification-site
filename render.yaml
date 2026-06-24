@@ -5,6 +5,8 @@ services:
     buildCommand: npm install
     startCommand: node server.js
     envVars:
+      - key: NODE_VERSION
+        value: 20.19.2
       - key: JWT_SECRET
         generateValue: true
       - key: DATA_DIR
