@@ -9,190 +9,553 @@
 <meta name="robots" content="index, follow">
 <meta name="author" content="VériCode">
 <meta name="google-site-verification" content="DP117PMBe4vOozruaOIAOMpSTdezaanti48VTVuO0qk" />
-<!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://verification-site-xj7p.onrender.com/">
 <meta property="og:title" content="VériCode — Vérification & Remboursement">
 <meta property="og:description" content="Validez votre code et obtenez votre remboursement rapidement avec VériCode, la plateforme de vérification sécurisée.">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="VériCode">
-<!-- Canonical -->
 <link rel="canonical" href="https://verification-site-xj7p.onrender.com/">
-<!-- Twitter Card -->
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="VériCode — Vérification & Remboursement">
 <meta name="twitter:description" content="Plateforme de vérification sécurisée et remboursement en ligne.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  * { font-family: 'Inter', sans-serif; }
-  .bg-navy  { background-color: #0F2557; }
-  .text-navy { color: #0F2557; }
-  .text-gold { color: #C9A84C; }
+* { font-family: 'Inter', sans-serif; box-sizing: border-box; }
+h1,h2,h3,.font-heading { font-family: 'Poppins', sans-serif; }
 
-  /* Hero gradient */
-  .hero-bg { background: linear-gradient(135deg, #0A1A3D 0%, #0F2557 60%, #162E68 100%); }
+:root {
+  --navy:   #0A1E3D;
+  --navy-l: #0F2557;
+  --navy-ll:#162E68;
+  --gold:   #C9A84C;
+  --gold-l: #E5C060;
+  --gold-d: #A8893A;
+}
 
-  /* Buttons */
-  .btn-gold { background: linear-gradient(135deg,#C9A84C,#E5C060); color:#0F2557; font-weight:700; transition:all .2s; }
-  .btn-gold:hover { transform:translateY(-1px); box-shadow:0 8px 20px rgba(201,168,76,.35); }
-  .btn-navy { background:#0F2557; color:white; font-weight:700; transition:all .2s; }
-  .btn-navy:hover { background:#162E68; transform:translateY(-1px); }
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:#f1f5f9; }
+::-webkit-scrollbar-thumb { background:#c9a84c66; border-radius:3px; }
 
-  /* Input */
-  .inp { width:100%; padding:11px 14px; border:2px solid #E5E7EB; border-radius:10px; font-size:14px; transition:border-color .2s; background:white; }
-  .inp:focus { outline:none; border-color:#C9A84C; box-shadow:0 0 0 3px rgba(201,168,76,.15); }
-  select.inp { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; background-size:16px; padding-right:38px; }
+/* ── NAV ── */
+.nav-bar {
+  background: rgba(10,30,61,.97);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(201,168,76,.18);
+}
 
-  /* Code boxes */
-  .code-box {
-    width: 38px; height: 48px;
-    border: 2px solid #D1D5DB;
-    border-radius: 8px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: 700;
-    font-family: 'Courier New', monospace;
-    transition: border-color .15s, box-shadow .15s;
-    background: white;
-    color: #0F2557;
-    text-transform: uppercase;
-  }
-  .code-box:focus { outline:none; border-color:#C9A84C; box-shadow:0 0 0 3px rgba(201,168,76,.2); }
-  .code-box.filled { border-color:#0F2557; background:#F8FAFF; }
-  .code-box.masked { color:transparent; text-shadow: 0 0 8px #0F2557; }
+/* ── HERO ── */
+.hero-bg {
+  background: linear-gradient(135deg, #060e22 0%, #0A1E3D 50%, #0d2650 100%);
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg::before {
+  content:'';
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 70% 40%, rgba(201,168,76,.08) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 20% 70%, rgba(15,37,87,.4) 0%, transparent 60%);
+  pointer-events:none;
+}
+.hero-grid-overlay {
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(201,168,76,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,168,76,.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.hero-stat {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px;
+  padding: 16px 20px;
+  text-align: center;
+  backdrop-filter: blur(8px);
+}
 
-  /* Separator */
-  .code-sep { color:#9CA3AF; font-size:20px; font-weight:300; padding:0 4px; user-select:none; }
+/* ── PARTNERS SECTION ── */
+.partners-section {
+  background: #f8fafc;
+  border-top: 1px solid #e8ecf2;
+  border-bottom: 1px solid #e8ecf2;
+  padding: 36px 0;
+}
+.partners-label {
+  text-align: center;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: 28px;
+}
+.partners-track-wrap {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+.partners-track {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  width: max-content;
+  animation: marquee 22s linear infinite;
+}
+.partners-track:hover { animation-play-state: paused; }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.partner-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 64px;
+  padding: 10px 22px;
+  background: white;
+  border-radius: 14px;
+  border: 1.5px solid #e2e8f0;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  transition: box-shadow .25s, transform .25s, border-color .25s;
+  cursor: default;
+}
+.partner-logo:hover {
+  box-shadow: 0 8px 28px rgba(0,0,0,.12);
+  transform: translateY(-3px);
+  border-color: #c9a84c55;
+}
 
-  /* Status badges */
-  .badge { display:inline-flex; align-items:center; gap:5px; padding:4px 12px; border-radius:999px; font-size:12px; font-weight:600; }
-  .badge-pending    { background:#FEF3C7; color:#92400E; }
-  .badge-processing { background:#DBEAFE; color:#1E40AF; }
-  .badge-valid      { background:#D1FAE5; color:#065F46; }
-  .badge-invalid    { background:#FEE2E2; color:#991B1B; }
-  .badge-used       { background:#FFEDD5; color:#9A3412; }
-  .badge-expired    { background:#F3F4F6; color:#374151; }
-  .badge-completed  { background:#CCFBF1; color:#134E4A; }
-  .badge-verification  { background:#EDE9FE; color:#5B21B6; }
-  .badge-remboursement { background:#FCE7F3; color:#9D174D; }
+/* ── BUTTONS ── */
+.btn-gold {
+  background: linear-gradient(135deg,#C9A84C,#E5C060);
+  color: var(--navy);
+  font-weight: 700;
+  transition: all .22s;
+  border: none;
+}
+.btn-gold:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(201,168,76,.4); }
+.btn-navy {
+  background: var(--navy);
+  color: white;
+  font-weight: 700;
+  transition: all .22s;
+}
+.btn-navy:hover { background: var(--navy-ll); transform:translateY(-2px); box-shadow: 0 8px 24px rgba(10,30,61,.3); }
 
-  /* Animations */
-  .fade-in { animation:fi .35s ease; }
-  @keyframes fi { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+/* ── INPUTS ── */
+.inp {
+  width:100%; padding:11px 14px;
+  border:2px solid #E5E7EB; border-radius:10px;
+  font-size:14px; transition:border-color .2s, box-shadow .2s;
+  background:white;
+}
+.inp:focus { outline:none; border-color:#C9A84C; box-shadow:0 0 0 3px rgba(201,168,76,.15); }
+select.inp {
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 12px center; background-size:16px; padding-right:38px;
+}
 
-  /* Service cards hover */
-  .service-card { transition:all .25s; cursor:pointer; }
-  .service-card:hover { transform:translateY(-4px); box-shadow:0 20px 40px rgba(0,0,0,.12); }
-  .service-card.selected { border-color:#C9A84C !important; box-shadow:0 0 0 3px rgba(201,168,76,.25); }
+/* ── CODE BOXES ── */
+.code-box {
+  width:38px; height:48px;
+  border:2px solid #D1D5DB; border-radius:8px;
+  text-align:center; font-size:18px; font-weight:700;
+  font-family:'Courier New',monospace;
+  transition:border-color .15s, box-shadow .15s;
+  background:white; color:#0A1E3D; text-transform:uppercase;
+}
+.code-box:focus { outline:none; border-color:#C9A84C; box-shadow:0 0 0 3px rgba(201,168,76,.2); }
+.code-box.filled { border-color:#0A1E3D; background:#F8FAFF; }
+.code-box.masked { color:transparent; text-shadow: 0 0 8px #0A1E3D; }
+.code-sep { color:#9CA3AF; font-size:20px; font-weight:300; padding:0 4px; user-select:none; }
+
+/* ── BADGES ── */
+.badge { display:inline-flex; align-items:center; gap:5px; padding:4px 12px; border-radius:999px; font-size:12px; font-weight:600; }
+.badge-pending    { background:#FEF3C7; color:#92400E; }
+.badge-processing { background:#DBEAFE; color:#1E40AF; }
+.badge-valid      { background:#D1FAE5; color:#065F46; }
+.badge-invalid    { background:#FEE2E2; color:#991B1B; }
+.badge-used       { background:#FFEDD5; color:#9A3412; }
+.badge-expired    { background:#F3F4F6; color:#374151; }
+.badge-completed  { background:#CCFBF1; color:#134E4A; }
+.badge-verification  { background:#EDE9FE; color:#5B21B6; }
+.badge-remboursement { background:#FCE7F3; color:#9D174D; }
+
+/* ── SERVICE CARDS ── */
+.service-card {
+  transition: all .28s cubic-bezier(.4,0,.2,1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.service-card::before {
+  content:'';
+  position:absolute; inset:0;
+  background: linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,0));
+  opacity:0; transition:opacity .28s;
+  pointer-events:none;
+}
+.service-card:hover { transform:translateY(-6px); box-shadow:0 24px 48px rgba(0,0,0,.13); }
+.service-card:hover::before { opacity:1; }
+.service-card.selected { border-color:#C9A84C !important; box-shadow:0 0 0 3px rgba(201,168,76,.25); }
+.service-card-icon {
+  width:60px; height:60px; border-radius:16px;
+  display:flex; align-items:center; justify-content:center; margin-bottom:20px;
+}
+
+/* ── STEPS ── */
+.step-card {
+  background:white; border-radius:16px; padding:28px;
+  border:1px solid #F1F5F9;
+  box-shadow:0 2px 16px rgba(0,0,0,.05);
+  position:relative; overflow:hidden;
+  transition: box-shadow .25s, transform .25s;
+}
+.step-card:hover { box-shadow:0 12px 32px rgba(0,0,0,.1); transform:translateY(-3px); }
+.step-num {
+  font-family:'Poppins',sans-serif;
+  font-size:3.5rem; font-weight:900; line-height:1;
+  position:absolute; right:20px; bottom:12px;
+  opacity:.07; color:var(--navy);
+  user-select:none;
+}
+
+/* ── TRUST BADGES ── */
+.trust-badge {
+  display:inline-flex; align-items:center; gap:7px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:999px; padding:7px 16px;
+  font-size:.78rem; color:rgba(255,255,255,.8);
+  backdrop-filter:blur(8px);
+}
+
+/* ── ANIMATIONS ── */
+.fade-in { animation:fi .38s cubic-bezier(.4,0,.2,1); }
+@keyframes fi { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+
+.float-anim { animation: float 5s ease-in-out infinite; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+/* ── FOOTER ── */
+.footer-bg {
+  background: linear-gradient(135deg, #060e22, #0A1E3D);
+  border-top: 1px solid rgba(201,168,76,.2);
+}
 </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-slate-50 min-h-screen">
 
-<!-- ════════════════ NAV ════════════════ -->
-<nav class="bg-navy fixed w-full top-0 z-50 shadow-lg">
-  <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
-    <button onclick="showView('landing')" class="flex items-center gap-2.5">
-      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#C9A84C,#E5C060)">
-        <svg width="16" height="16" fill="none" stroke="#0F2557" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+<!-- ══════════════ NAV ══════════════ -->
+<nav class="nav-bar fixed w-full top-0 z-50">
+  <div class="max-w-5xl mx-auto px-5 h-16 flex items-center justify-between">
+    <button onclick="showView('landing')" class="flex items-center gap-3 group">
+      <div class="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg"
+           style="background:linear-gradient(135deg,#C9A84C,#E5C060)">
+        <svg width="17" height="17" fill="none" stroke="#0A1E3D" stroke-width="2.5" viewBox="0 0 24 24">
+          <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+        </svg>
       </div>
-      <span class="text-white font-bold text-lg">Véri<span class="text-gold">Code</span></span>
+      <span class="text-white font-heading font-bold text-lg tracking-tight">
+        Véri<span style="color:#C9A84C">Code</span>
+      </span>
     </button>
     <div class="flex items-center gap-1">
       <button onclick="showView('landing')" id="nav-landing"
-        class="text-white text-sm font-medium px-3 py-2 rounded-lg hover:bg-white/10 transition-colors">
+        class="text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-white/10 transition-all">
         Accueil
       </button>
       <button onclick="showView('track')" id="nav-track"
-        class="text-gray-300 text-sm font-medium px-3 py-2 rounded-lg hover:bg-white/10 transition-colors">
+        class="text-gray-400 text-sm font-medium px-4 py-2 rounded-xl hover:bg-white/10 transition-all">
         Suivre ma demande
       </button>
-      <a href="admin.html" class="ml-2 text-xs text-gray-400 hover:text-gold transition-colors px-3 py-2 rounded-lg hover:bg-white/5">
+      <a href="admin.html"
+         class="ml-1 text-xs text-gray-500 hover:text-yellow-400 transition-colors px-3 py-2 rounded-xl hover:bg-white/5">
         Admin →
       </a>
     </div>
   </div>
 </nav>
 
-<!-- ════════════════ HERO ════════════════ -->
-<section class="hero-bg pt-28 pb-14">
-  <div class="max-w-4xl mx-auto px-4 text-center">
-    <div class="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-1.5 mb-5">
-      <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-      <span class="text-white/80 text-sm">Service disponible 24h/24</span>
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero-bg pt-32 pb-20">
+  <div class="hero-grid-overlay"></div>
+  <div class="max-w-4xl mx-auto px-5 text-center relative z-10">
+
+    <!-- Status pill -->
+    <div class="inline-flex items-center gap-2.5 mb-7">
+      <span class="trust-badge">
+        <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+        Service disponible 24h/24
+      </span>
+      <span class="trust-badge">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Plateforme sécurisée
+      </span>
     </div>
-    <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-3 leading-tight">
-      Vérification & <span class="text-gold">Remboursement</span>
+
+    <!-- Heading -->
+    <h1 class="font-heading font-black text-white mb-4 leading-tight"
+        style="font-size:clamp(2.2rem,5vw,3.5rem)">
+      Vérification &amp;<br>
+      <span style="background:linear-gradient(90deg,#C9A84C,#E5C060);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">
+        Remboursement
+      </span>
     </h1>
-    <p class="text-white/65 text-lg max-w-lg mx-auto">
-      Plateforme sécurisée pour vérifier vos codes prépayés ou demander un remboursement.
+    <p class="text-white/60 text-lg max-w-xl mx-auto mb-10 leading-relaxed">
+      Vérifiez vos codes prépayés ou demandez un remboursement en toute sécurité.<br>
+      Résultat rapide, suivi en temps réel.
     </p>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-3 gap-4 max-w-lg mx-auto">
+      <div class="hero-stat">
+        <div class="font-heading font-bold text-2xl text-white mb-1">1 200+</div>
+        <div class="text-white/45 text-xs">Vérifications effectuées</div>
+      </div>
+      <div class="hero-stat">
+        <div class="font-heading font-bold text-2xl text-white mb-1">&lt; 24h</div>
+        <div class="text-white/45 text-xs">Délai de traitement</div>
+      </div>
+      <div class="hero-stat">
+        <div class="font-heading font-bold text-2xl text-white mb-1">4</div>
+        <div class="text-white/45 text-xs">Types de codes</div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- ════════════════ MAIN ════════════════ -->
-<main class="max-w-3xl mx-auto px-4 -mt-5 pb-24">
+<!-- ══════════════ PARTNERS ══════════════ -->
+<section class="partners-section">
+  <p class="partners-label">Codes acceptés sur notre plateforme</p>
+  <div class="partners-track-wrap">
+    <div class="partners-track" id="partnersTrack">
+
+      <!-- ─── Neosurf ─── -->
+      <div class="partner-logo">
+        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
+          <rect width="130" height="44" rx="8" fill="#18A558"/>
+          <path d="M8 34 Q65 6 122 34" stroke="rgba(255,255,255,.18)" stroke-width="2.5" fill="none"/>
+          <text x="65" y="28" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="17" fill="white" text-anchor="middle" letter-spacing=".5">neosurf</text>
+          <text x="65" y="39" font-family="Arial,Helvetica,sans-serif" font-size="7.5" fill="rgba(255,255,255,.55)" text-anchor="middle" letter-spacing="1.5">PRÉPAYÉ</text>
+        </svg>
+      </div>
+
+      <!-- ─── PCS ─── -->
+      <div class="partner-logo">
+        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
+          <rect width="130" height="44" rx="8" fill="#004B9B"/>
+          <rect x="10" y="12" width="24" height="18" rx="3" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8"/>
+          <rect x="10" y="17" width="24" height="5" fill="rgba(255,255,255,.3)"/>
+          <text x="42" y="30" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="21" fill="white">PCS</text>
+          <text x="75" y="40" font-family="Arial,Helvetica,sans-serif" font-size="7" fill="rgba(255,255,255,.5)" letter-spacing=".8">MASTERCARD</text>
+        </svg>
+      </div>
+
+      <!-- ─── Steam ─── -->
+      <div class="partner-logo">
+        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
+          <rect width="130" height="44" rx="8" fill="#1B2838"/>
+          <!-- Steam-like icon -->
+          <circle cx="22" cy="22" r="11" fill="none" stroke="#66C0F4" stroke-width="2"/>
+          <circle cx="22" cy="22" r="5.5" fill="#66C0F4"/>
+          <path d="M14 10 Q18 14 22 10" stroke="#66C0F4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M30 10 Q26 14 22 10" stroke="#66C0F4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <text x="40" y="28" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="18" fill="#C7D5E0" letter-spacing="1">STEAM</text>
+        </svg>
+      </div>
+
+      <!-- ─── Transcash ─── -->
+      <div class="partner-logo">
+        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
+          <rect width="130" height="44" rx="8" fill="#F7941D"/>
+          <path d="M10 22h18M22 14l7 8-7 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <text x="38" y="29" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="15" fill="white">transcash</text>
+        </svg>
+      </div>
+
+      <!-- ─── Repeat × 2 for seamless loop ─── -->
+
+      <div class="partner-logo">
+        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
+          <rect width="130" height="44" rx="8" fill="#18A558"/>
+          <path d="M8 34 Q65 6 122 34" stroke="rgba(255,255,255,.18)" stroke-width="2.5" fill="none"/>
+          <text x="65" y="28" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="17" fill="white" text-anchor="middle" letter-spacing=".5">neosurf</text>
+          <text x="65" y="39" font-family="Arial,Helvetica,sans-serif" font-size="7.5" fill="rgba(255,255,255,.55)" text-anchor="middle" letter-spacing="1.5">PRÉPAYÉ</text>
+        </svg>
+      </div>
+      <div class="partner-logo">
+        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
+          <rect width="130" height="44" rx="8" fill="#004B9B"/>
+          <rect x="10" y="12" width="24" height="18" rx="3" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8"/>
+          <rect x="10" y="17" width="24" height="5" fill="rgba(255,255,255,.3)"/>
+          <text x="42" y="30" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="21" fill="white">PCS</text>
+          <text x="75" y="40" font-family="Arial,Helvetica,sans-serif" font-size="7" fill="rgba(255,255,255,.5)" letter-spacing=".8">MASTERCARD</text>
+        </svg>
+      </div>
+      <div class="partner-logo">
+        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
+          <rect width="130" height="44" rx="8" fill="#1B2838"/>
+          <circle cx="22" cy="22" r="11" fill="none" stroke="#66C0F4" stroke-width="2"/>
+          <circle cx="22" cy="22" r="5.5" fill="#66C0F4"/>
+          <path d="M14 10 Q18 14 22 10" stroke="#66C0F4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M30 10 Q26 14 22 10" stroke="#66C0F4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <text x="40" y="28" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="18" fill="#C7D5E0" letter-spacing="1">STEAM</text>
+        </svg>
+      </div>
+      <div class="partner-logo">
+        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
+          <rect width="130" height="44" rx="8" fill="#F7941D"/>
+          <path d="M10 22h18M22 14l7 8-7 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <text x="38" y="29" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="15" fill="white">transcash</text>
+        </svg>
+      </div>
+
+      <!-- ─── Repeat × 3 ─── -->
+
+      <div class="partner-logo">
+        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
+          <rect width="130" height="44" rx="8" fill="#18A558"/>
+          <path d="M8 34 Q65 6 122 34" stroke="rgba(255,255,255,.18)" stroke-width="2.5" fill="none"/>
+          <text x="65" y="28" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="17" fill="white" text-anchor="middle" letter-spacing=".5">neosurf</text>
+          <text x="65" y="39" font-family="Arial,Helvetica,sans-serif" font-size="7.5" fill="rgba(255,255,255,.55)" text-anchor="middle" letter-spacing="1.5">PRÉPAYÉ</text>
+        </svg>
+      </div>
+      <div class="partner-logo">
+        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
+          <rect width="130" height="44" rx="8" fill="#004B9B"/>
+          <rect x="10" y="12" width="24" height="18" rx="3" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8"/>
+          <rect x="10" y="17" width="24" height="5" fill="rgba(255,255,255,.3)"/>
+          <text x="42" y="30" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="21" fill="white">PCS</text>
+          <text x="75" y="40" font-family="Arial,Helvetica,sans-serif" font-size="7" fill="rgba(255,255,255,.5)" letter-spacing=".8">MASTERCARD</text>
+        </svg>
+      </div>
+      <div class="partner-logo">
+        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
+          <rect width="130" height="44" rx="8" fill="#1B2838"/>
+          <circle cx="22" cy="22" r="11" fill="none" stroke="#66C0F4" stroke-width="2"/>
+          <circle cx="22" cy="22" r="5.5" fill="#66C0F4"/>
+          <path d="M14 10 Q18 14 22 10" stroke="#66C0F4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M30 10 Q26 14 22 10" stroke="#66C0F4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <text x="40" y="28" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="18" fill="#C7D5E0" letter-spacing="1">STEAM</text>
+        </svg>
+      </div>
+      <div class="partner-logo">
+        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
+          <rect width="130" height="44" rx="8" fill="#F7941D"/>
+          <path d="M10 22h18M22 14l7 8-7 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <text x="38" y="29" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="15" fill="white">transcash</text>
+        </svg>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<main class="max-w-3xl mx-auto px-5 pt-12 pb-24">
 
   <!-- ── LANDING ── -->
   <div id="view-landing" class="fade-in">
-    <p class="text-center text-gray-500 text-sm font-medium mb-5 uppercase tracking-wider">Que souhaitez-vous faire ?</p>
-    <div class="grid md:grid-cols-2 gap-5">
+
+    <p class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-8">
+      Que souhaitez-vous faire ?
+    </p>
+
+    <!-- Service cards -->
+    <div class="grid md:grid-cols-2 gap-6 mb-14">
 
       <!-- Vérification -->
-      <div class="service-card bg-white rounded-2xl p-7 border-2 border-gray-100 shadow-md"
+      <div class="service-card bg-white rounded-2xl p-8 border-2 border-slate-100 shadow-md"
            onclick="startService('verification')">
-        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
-             style="background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(229,192,96,.15))">
+        <div class="service-card-icon" style="background:linear-gradient(135deg,rgba(201,168,76,.14),rgba(229,192,96,.07))">
           <svg width="28" height="28" fill="none" stroke="#C9A84C" stroke-width="2" viewBox="0 0 24 24">
             <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
           </svg>
         </div>
-        <h2 class="text-xl font-bold text-navy mb-2">Vérification de code</h2>
-        <p class="text-gray-500 text-sm mb-6 leading-relaxed">
-          Vérifiez la validité de votre code prépayé (Transcash, Neosurf, PCS, Steam). Résultat disponible sous peu.
+        <h2 class="font-heading font-bold text-xl mb-2" style="color:#0A1E3D">Vérification de code</h2>
+        <p class="text-slate-400 text-sm mb-7 leading-relaxed">
+          Vérifiez la validité de votre code prépayé (Transcash, Neosurf, PCS, Steam). Résultat sous 24h.
         </p>
-        <button class="btn-gold w-full py-3 rounded-xl text-sm">
-          Vérifier mon code →
+        <div class="flex items-center justify-between mb-5">
+          <span class="text-xs text-slate-400 flex items-center gap-1.5">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Résultat sous 24h
+          </span>
+          <span class="text-xs font-semibold px-3 py-1 rounded-full" style="background:rgba(201,168,76,.12);color:#A8893A">Gratuit</span>
+        </div>
+        <button class="btn-gold w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Vérifier mon code
         </button>
       </div>
 
       <!-- Remboursement -->
-      <div class="service-card bg-white rounded-2xl p-7 border-2 border-gray-100 shadow-md"
+      <div class="service-card bg-white rounded-2xl p-8 border-2 border-slate-100 shadow-md"
            onclick="startService('remboursement')">
-        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
-             style="background:linear-gradient(135deg,rgba(15,37,87,.08),rgba(22,46,104,.08))">
-          <svg width="28" height="28" fill="none" stroke="#0F2557" stroke-width="2" viewBox="0 0 24 24">
+        <div class="service-card-icon" style="background:linear-gradient(135deg,rgba(10,30,61,.08),rgba(22,46,104,.04))">
+          <svg width="28" height="28" fill="none" stroke="#0A1E3D" stroke-width="2" viewBox="0 0 24 24">
             <path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
           </svg>
         </div>
-        <h2 class="text-xl font-bold text-navy mb-2">Remboursement</h2>
-        <p class="text-gray-500 text-sm mb-6 leading-relaxed">
-          Demandez le remboursement d'un code non fonctionnel ou déjà utilisé. Notre équipe traitera votre demande.
+        <h2 class="font-heading font-bold text-xl mb-2" style="color:#0A1E3D">Remboursement</h2>
+        <p class="text-slate-400 text-sm mb-7 leading-relaxed">
+          Demandez le remboursement d'un code non fonctionnel ou déjà utilisé. Notre équipe traite votre dossier.
         </p>
-        <button class="btn-navy w-full py-3 rounded-xl text-sm">
-          Demander un remboursement →
+        <div class="flex items-center justify-between mb-5">
+          <span class="text-xs text-slate-400 flex items-center gap-1.5">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Traitement sécurisé
+          </span>
+          <span class="text-xs font-semibold px-3 py-1 rounded-full" style="background:rgba(10,30,61,.08);color:#0A1E3D">Suivi dossier</span>
+        </div>
+        <button class="btn-navy w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+          Demander un remboursement
         </button>
       </div>
     </div>
 
     <!-- How it works -->
-    <div class="mt-12 bg-white rounded-2xl p-8 border border-gray-100 shadow-sm">
-      <h3 class="text-center font-bold text-navy mb-8">Comment ça fonctionne ?</h3>
-      <div class="grid md:grid-cols-2 gap-8">
-        <div class="flex gap-4">
-          <div class="w-10 h-10 rounded-xl shrink-0 flex items-center justify-center font-extrabold text-gold" style="background:rgba(201,168,76,.12)">1</div>
-          <div>
-            <h4 class="font-bold text-navy mb-1">Soumettez votre demande</h4>
-            <p class="text-gray-500 text-sm">Choisissez le service, renseignez vos informations et saisissez votre code. Un numéro de dossier vous est attribué.</p>
+    <div class="mb-3">
+      <p class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-8">
+        Comment ça fonctionne ?
+      </p>
+      <div class="grid md:grid-cols-2 gap-5">
+
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="w-11 h-11 rounded-2xl flex items-center justify-center mb-5"
+               style="background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(229,192,96,.08))">
+            <svg width="20" height="20" fill="none" stroke="#C9A84C" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+            </svg>
           </div>
+          <h4 class="font-heading font-bold text-slate-800 mb-2">Soumettez votre demande</h4>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            Choisissez le service, renseignez vos informations et saisissez votre code. Un numéro de dossier unique vous est attribué instantanément.
+          </p>
         </div>
-        <div class="flex gap-4">
-          <div class="w-10 h-10 rounded-xl shrink-0 flex items-center justify-center font-extrabold text-green-700" style="background:rgba(6,95,70,.08)">2</div>
-          <div>
-            <h4 class="font-bold text-navy mb-1">Consultez le résultat</h4>
-            <p class="text-gray-500 text-sm">Revenez sur "Suivre ma demande" avec votre numéro de dossier pour voir le statut et les commentaires.</p>
+
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="w-11 h-11 rounded-2xl flex items-center justify-center mb-5"
+               style="background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(16,185,129,.05))">
+            <svg width="20" height="20" fill="none" stroke="#059669" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+            </svg>
           </div>
+          <h4 class="font-heading font-bold text-slate-800 mb-2">Consultez le résultat</h4>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            Utilisez "Suivre ma demande" avec votre numéro de dossier pour consulter le statut, la décision et les commentaires de notre équipe.
+          </p>
         </div>
+
       </div>
     </div>
   </div>
@@ -200,124 +563,122 @@
   <!-- ── FORM ── -->
   <div id="view-form" class="hidden fade-in">
 
-    <!-- Breadcrumb -->
-    <div class="flex items-center gap-2 mb-5">
-      <button onclick="showView('landing')" class="text-sm text-gray-400 hover:text-navy transition-colors flex items-center gap-1">
-        ← Accueil
+    <div class="flex items-center gap-2 mb-6">
+      <button onclick="showView('landing')"
+              class="text-sm text-slate-400 hover:text-slate-700 transition-colors flex items-center gap-1.5 font-medium">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Accueil
       </button>
-      <span class="text-gray-300">/</span>
-      <span id="breadcrumb-label" class="text-sm font-semibold text-navy"></span>
+      <svg width="14" height="14" fill="none" stroke="#D1D5DB" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      <span id="breadcrumb-label" class="text-sm font-bold" style="color:#0A1E3D"></span>
     </div>
 
     <!-- Form card -->
-    <div id="form-card" class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-      <!-- Header -->
-      <div class="flex items-center gap-3 mb-8">
-        <div id="form-icon" class="w-11 h-11 rounded-xl flex items-center justify-center"></div>
+    <div id="form-card" class="bg-white rounded-2xl shadow-xl p-8 border border-slate-100">
+      <div class="flex items-center gap-4 mb-8 pb-6 border-b border-slate-100">
+        <div id="form-icon" class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"></div>
         <div>
-          <h2 id="form-title" class="text-xl font-bold text-navy"></h2>
-          <p id="form-subtitle" class="text-sm text-gray-400"></p>
+          <h2 id="form-title" class="font-heading font-bold text-xl" style="color:#0A1E3D"></h2>
+          <p id="form-subtitle" class="text-sm text-slate-400 mt-0.5"></p>
         </div>
       </div>
 
       <div class="space-y-5">
-
-        <!-- Nom + Prénom -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Nom <span class="text-red-400">*</span></label>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">Nom <span class="text-red-400">*</span></label>
             <input type="text" id="f-nom" class="inp" placeholder="Votre nom">
           </div>
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Prénom <span class="text-red-400">*</span></label>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">Prénom <span class="text-red-400">*</span></label>
             <input type="text" id="f-prenom" class="inp" placeholder="Votre prénom">
           </div>
         </div>
 
-        <!-- Email -->
         <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">Email <span class="text-red-400">*</span></label>
+          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">Email <span class="text-red-400">*</span></label>
           <input type="email" id="f-email" class="inp" placeholder="votre@email.com">
         </div>
 
-        <!-- Type de code -->
         <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">Type de code <span class="text-red-400">*</span></label>
+          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">Type de code <span class="text-red-400">*</span></label>
           <select id="f-type" class="inp" onchange="onTypeChange()">
             <option value="">Sélectionnez un type…</option>
           </select>
         </div>
 
-        <!-- Nombre de tickets -->
         <div id="ticket-count-section" class="hidden">
-          <label class="block text-sm font-semibold text-gray-700 mb-3">
-            Combien de tickets à vérifier ? <span class="text-red-400">*</span>
+          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-3">
+            Nombre de tickets <span class="text-red-400">*</span>
+            <span class="text-slate-400 font-normal normal-case tracking-normal ml-1">(max. 7)</span>
           </label>
           <div class="flex flex-wrap gap-2 mb-1" id="count-buttons"></div>
-          <p class="text-xs text-gray-400 mt-1">Maximum 7 tickets par demande.</p>
         </div>
 
-        <!-- Code inputs -->
         <div id="code-section" class="hidden">
           <div class="mb-3">
-            <label class="text-sm font-semibold text-gray-700">
+            <label class="text-xs font-bold text-slate-600 uppercase tracking-wide">
               Code(s) <span class="text-red-400">*</span>
-              <span id="code-format-hint" class="text-xs font-normal text-gray-400 ml-2"></span>
+              <span id="code-format-hint" class="text-xs font-normal text-slate-400 ml-2 normal-case tracking-normal"></span>
             </label>
           </div>
           <div id="code-inputs" class="space-y-2.5"></div>
         </div>
 
-        <!-- Remboursement extra fields -->
         <div id="refund-fields" class="hidden space-y-5">
-          <div class="h-px bg-gray-100"></div>
+          <div class="h-px bg-slate-100"></div>
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Montant du remboursement (€)</label>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">Montant du remboursement (€)</label>
             <input type="text" id="f-montant" class="inp" placeholder="Ex : 50">
           </div>
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Motif de la demande</label>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">Motif de la demande</label>
             <textarea id="f-motif" class="inp h-24 resize-none" placeholder="Décrivez la raison de votre demande de remboursement…"></textarea>
           </div>
         </div>
 
-        <!-- Error -->
-        <div id="form-error" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm"></div>
+        <div id="form-error" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm flex items-start gap-2.5">
+          <svg class="shrink-0 mt-0.5" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span></span>
+        </div>
 
-        <!-- Submit -->
         <button onclick="submitForm()" id="submit-btn"
-          class="btn-gold w-full py-4 rounded-xl text-base font-bold shadow-lg">
-          Envoyer la demande →
+          class="btn-gold w-full py-4 rounded-xl text-base font-bold shadow-lg flex items-center justify-center gap-2">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Envoyer la demande
         </button>
 
-        <p class="text-center text-xs text-gray-400">
+        <p class="text-center text-xs text-slate-400">
           Déjà soumis une demande ?
-          <button onclick="showView('track')" class="text-gold font-medium hover:underline">Suivre ma demande</button>
+          <button onclick="showView('track')" class="font-semibold hover:underline" style="color:#C9A84C">Suivre ma demande →</button>
         </p>
       </div>
     </div>
 
     <!-- Success card -->
-    <div id="success-card" class="hidden bg-white rounded-2xl shadow-xl p-8 border border-green-100 fade-in">
+    <div id="success-card" class="hidden bg-white rounded-2xl shadow-xl p-8 border border-emerald-100 fade-in">
       <div class="text-center">
-        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5">
-          <svg width="36" height="36" fill="none" stroke="#065F46" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+             style="background:linear-gradient(135deg,#dcfce7,#bbf7d0)">
+          <svg width="36" height="36" fill="none" stroke="#059669" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+          </svg>
         </div>
-        <h2 class="text-2xl font-bold text-navy mb-2">Demande enregistrée !</h2>
-        <p class="text-gray-500 mb-6">Conservez précieusement ce numéro de dossier.</p>
-        <div class="bg-navy rounded-2xl p-6 mb-6">
-          <p class="text-white/50 text-xs uppercase tracking-wider mb-2">Numéro de dossier</p>
-          <p id="success-dossier" class="text-gold text-3xl font-extrabold tracking-widest font-mono"></p>
+        <h2 class="font-heading font-bold text-2xl mb-2" style="color:#0A1E3D">Demande enregistrée !</h2>
+        <p class="text-slate-400 mb-7">Conservez précieusement ce numéro de dossier.</p>
+        <div class="rounded-2xl p-7 mb-6" style="background:linear-gradient(135deg,#0A1E3D,#0F2557)">
+          <p class="text-white/40 text-xs uppercase tracking-widest mb-2">Numéro de dossier</p>
+          <p id="success-dossier" class="text-3xl font-extrabold tracking-widest font-mono" style="color:#C9A84C"></p>
         </div>
         <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-left">
           <div class="flex gap-2.5">
-            <svg class="shrink-0 mt-0.5 text-amber-600" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <svg class="shrink-0 mt-0.5 text-amber-500" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <p class="text-sm text-amber-800">Notre équipe traitera votre demande dans les meilleurs délais. Revenez consulter le statut avec votre numéro de dossier.</p>
           </div>
         </div>
         <div class="flex gap-3">
-          <button onclick="goTrack()" class="btn-gold flex-1 py-3 rounded-xl font-bold text-sm">Suivre ma demande →</button>
-          <button onclick="resetForm()" class="flex-1 py-3 rounded-xl border-2 border-gray-200 font-semibold text-gray-600 hover:bg-gray-50 transition-colors text-sm">Nouvelle demande</button>
+          <button onclick="goTrack()" class="btn-gold flex-1 py-3.5 rounded-xl font-bold text-sm">Suivre ma demande →</button>
+          <button onclick="resetForm()" class="flex-1 py-3.5 rounded-xl border-2 border-slate-200 font-semibold text-slate-600 hover:bg-slate-50 transition-colors text-sm">Nouvelle demande</button>
         </div>
       </div>
     </div>
@@ -325,20 +686,27 @@
 
   <!-- ── TRACK ── -->
   <div id="view-track" class="hidden fade-in">
-    <div class="flex items-center gap-2 mb-5">
-      <button onclick="showView('landing')" class="text-sm text-gray-400 hover:text-navy transition-colors">← Accueil</button>
-      <span class="text-gray-300">/</span>
-      <span class="text-sm font-semibold text-navy">Suivre ma demande</span>
+    <div class="flex items-center gap-2 mb-6">
+      <button onclick="showView('landing')"
+              class="text-sm text-slate-400 hover:text-slate-700 transition-colors flex items-center gap-1.5 font-medium">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Accueil
+      </button>
+      <svg width="14" height="14" fill="none" stroke="#D1D5DB" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="text-sm font-bold" style="color:#0A1E3D">Suivre ma demande</span>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-      <div class="flex items-center gap-3 mb-7">
-        <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:rgba(15,37,87,.08)">
-          <svg width="20" height="20" fill="none" stroke="#0F2557" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+    <div class="bg-white rounded-2xl shadow-xl p-8 border border-slate-100">
+      <div class="flex items-center gap-4 mb-7 pb-6 border-b border-slate-100">
+        <div class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
+             style="background:linear-gradient(135deg,rgba(10,30,61,.08),rgba(10,30,61,.04))">
+          <svg width="22" height="22" fill="none" stroke="#0A1E3D" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+          </svg>
         </div>
         <div>
-          <h2 class="text-xl font-bold text-navy">Suivre ma demande</h2>
-          <p class="text-sm text-gray-400">Entrez votre numéro de dossier</p>
+          <h2 class="font-heading font-bold text-xl" style="color:#0A1E3D">Suivre ma demande</h2>
+          <p class="text-sm text-slate-400 mt-0.5">Entrez votre numéro de dossier</p>
         </div>
       </div>
       <div class="space-y-4">
@@ -346,48 +714,49 @@
           placeholder="VS-XXXXXXXX" maxlength="11"
           oninput="this.value=this.value.toUpperCase()"
           onkeydown="if(event.key==='Enter') trackCode()">
-        <div id="track-error" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm"></div>
-        <button onclick="trackCode()" class="btn-gold w-full py-4 rounded-xl text-base font-bold shadow-lg">
-          Rechercher →
+        <div id="track-error" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm flex items-center gap-2">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+          <span></span>
+        </div>
+        <button onclick="trackCode()" class="btn-gold w-full py-4 rounded-xl text-base font-bold shadow-lg flex items-center justify-center gap-2">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          Rechercher
         </button>
       </div>
     </div>
 
-    <!-- Track result -->
-    <div id="track-result" class="hidden mt-5 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden fade-in">
-      <div class="p-6 border-b border-gray-100">
+    <div id="track-result" class="hidden mt-5 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden fade-in">
+      <div class="p-6 border-b border-slate-100">
         <div class="flex items-start justify-between gap-3 flex-wrap">
           <div>
-            <div class="flex items-center gap-2 mb-1">
-              <span id="r-service-badge" class="badge"></span>
-            </div>
-            <p class="text-xs text-gray-400 uppercase tracking-wider mt-2">Numéro de dossier</p>
-            <p id="r-dossier" class="font-mono font-bold text-navy text-xl mt-0.5"></p>
+            <div id="r-service-badge" class="mb-2"></div>
+            <p class="text-xs text-slate-400 uppercase tracking-wider mt-2">Numéro de dossier</p>
+            <p id="r-dossier" class="font-mono font-bold text-xl mt-0.5" style="color:#0A1E3D"></p>
           </div>
           <div id="r-status-badge"></div>
         </div>
       </div>
       <div class="p-6">
         <div class="grid grid-cols-2 gap-3 mb-4">
-          <div class="bg-gray-50 rounded-xl p-3">
-            <p class="text-xs text-gray-400 mb-1">Nom</p>
-            <p id="r-nom" class="font-semibold text-navy text-sm"></p>
+          <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+            <p class="text-xs text-slate-400 mb-1">Nom</p>
+            <p id="r-nom" class="font-semibold text-sm" style="color:#0A1E3D"></p>
           </div>
-          <div class="bg-gray-50 rounded-xl p-3">
-            <p class="text-xs text-gray-400 mb-1">Prénom</p>
-            <p id="r-prenom" class="font-semibold text-navy text-sm"></p>
+          <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+            <p class="text-xs text-slate-400 mb-1">Prénom</p>
+            <p id="r-prenom" class="font-semibold text-sm" style="color:#0A1E3D"></p>
           </div>
-          <div class="bg-gray-50 rounded-xl p-3">
-            <p class="text-xs text-gray-400 mb-1">Type de code</p>
-            <p id="r-type" class="font-semibold text-navy text-sm"></p>
+          <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+            <p class="text-xs text-slate-400 mb-1">Type de code</p>
+            <p id="r-type" class="font-semibold text-sm" style="color:#0A1E3D"></p>
           </div>
-          <div class="bg-gray-50 rounded-xl p-3">
-            <p class="text-xs text-gray-400 mb-1">Soumis le</p>
-            <p id="r-date" class="font-semibold text-navy text-sm"></p>
+          <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+            <p class="text-xs text-slate-400 mb-1">Soumis le</p>
+            <p id="r-date" class="font-semibold text-sm" style="color:#0A1E3D"></p>
           </div>
         </div>
         <div id="r-comment-block" class="hidden bg-blue-50 border border-blue-100 rounded-xl p-4">
-          <p class="text-xs text-blue-500 font-medium mb-1">Commentaire</p>
+          <p class="text-xs text-blue-500 font-bold uppercase tracking-wide mb-1">Commentaire</p>
           <p id="r-comment" class="text-sm text-blue-900 font-medium"></p>
         </div>
       </div>
@@ -396,12 +765,24 @@
 
 </main>
 
-<!-- Footer -->
-<footer class="bg-navy text-white py-8">
-  <div class="max-w-5xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-3">
-    <span class="font-bold">Véri<span class="text-gold">Code</span></span>
-    <p class="text-white/40 text-sm">© 2024 VériCode — Plateforme de vérification & remboursement</p>
-    <a href="admin.html" class="text-white/30 text-xs hover:text-gold transition-colors">Espace administrateur</a>
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer class="footer-bg text-white py-10">
+  <div class="max-w-5xl mx-auto px-5">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-5">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+             style="background:linear-gradient(135deg,#C9A84C,#E5C060)">
+          <svg width="14" height="14" fill="none" stroke="#0A1E3D" stroke-width="2.5" viewBox="0 0 24 24">
+            <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <span class="font-heading font-bold text-lg">Véri<span style="color:#C9A84C">Code</span></span>
+      </div>
+      <p class="text-white/35 text-sm">© 2025 VériCode — Plateforme de vérification &amp; remboursement</p>
+      <a href="admin.html" class="text-white/25 text-xs hover:text-yellow-400 transition-colors">
+        Espace administrateur →
+      </a>
+    </div>
   </div>
 </footer>
 
@@ -430,11 +811,11 @@ let lastDossier     = '';
 function showView(v) {
   ['landing','form','track'].forEach(x => document.getElementById('view-'+x).classList.toggle('hidden', x !== v));
   document.getElementById('nav-landing').className = v === 'landing'
-    ? 'text-white text-sm font-medium px-3 py-2 rounded-lg hover:bg-white/10 transition-colors'
-    : 'text-gray-300 text-sm font-medium px-3 py-2 rounded-lg hover:bg-white/10 transition-colors';
+    ? 'text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-white/10 transition-all'
+    : 'text-gray-400 text-sm font-medium px-4 py-2 rounded-xl hover:bg-white/10 transition-all';
   document.getElementById('nav-track').className = v === 'track'
-    ? 'text-white text-sm font-medium px-3 py-2 rounded-lg hover:bg-white/10 transition-colors'
-    : 'text-gray-300 text-sm font-medium px-3 py-2 rounded-lg hover:bg-white/10 transition-colors';
+    ? 'text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-white/10 transition-all'
+    : 'text-gray-400 text-sm font-medium px-4 py-2 rounded-xl hover:bg-white/10 transition-all';
 }
 
 /* ══════════════ SERVICE ══════════════ */
@@ -445,9 +826,9 @@ function startService(service) {
   document.getElementById('breadcrumb-label').textContent = isRefund ? 'Remboursement' : 'Vérification de code';
 
   const icon = document.getElementById('form-icon');
-  icon.style.background = isRefund ? 'rgba(15,37,87,0.08)' : 'rgba(201,168,76,0.12)';
+  icon.style.background = isRefund ? 'rgba(10,30,61,0.08)' : 'rgba(201,168,76,0.12)';
   icon.innerHTML = isRefund
-    ? `<svg width="22" height="22" fill="none" stroke="#0F2557" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>`
+    ? `<svg width="22" height="22" fill="none" stroke="#0A1E3D" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>`
     : `<svg width="22" height="22" fill="none" stroke="#C9A84C" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>`;
 
   document.getElementById('form-title').textContent = isRefund ? 'Demande de remboursement' : 'Vérification de code';
@@ -606,10 +987,13 @@ async function submitForm() {
     document.getElementById('form-card').classList.add('hidden');
     document.getElementById('success-card').classList.remove('hidden');
   } catch { showErr(errEl, 'Erreur de connexion. Réessayez.'); }
-  finally { btn.disabled = false; btn.textContent = 'Envoyer la demande →'; }
+  finally { btn.disabled = false; btn.textContent = 'Envoyer la demande'; }
 }
 
-function showErr(el, msg) { el.textContent = msg; el.classList.remove('hidden'); }
+function showErr(el, msg) {
+  el.querySelector('span').textContent = msg;
+  el.classList.remove('hidden');
+}
 
 function resetForm() {
   document.getElementById('f-nom').value = '';
