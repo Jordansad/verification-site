@@ -34,7 +34,6 @@ h1,h2,h3,.font-heading { font-family: 'Poppins', sans-serif; }
   --gold-d: #A8893A;
 }
 
-/* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width:6px; }
 ::-webkit-scrollbar-track { background:#f1f5f9; }
 ::-webkit-scrollbar-thumb { background:#c9a84c66; border-radius:3px; }
@@ -46,15 +45,28 @@ h1,h2,h3,.font-heading { font-family: 'Poppins', sans-serif; }
   border-bottom: 1px solid rgba(201,168,76,.18);
 }
 
+/* ── LANG SWITCHER ── */
+.lang-switcher {
+  display:flex; align-items:center; gap:2px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:10px; padding:3px;
+}
+.lang-btn {
+  padding:4px 9px; border-radius:7px;
+  font-size:.63rem; font-weight:700; letter-spacing:.07em;
+  text-transform:uppercase; color:rgba(255,255,255,.45);
+  background:none; border:none; cursor:pointer; transition:all .2s;
+}
+.lang-btn.active, .lang-btn:hover { color:#0A1E3D; background:#C9A84C; }
+
 /* ── HERO ── */
 .hero-bg {
   background: linear-gradient(135deg, #060e22 0%, #0A1E3D 50%, #0d2650 100%);
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
 .hero-bg::before {
-  content:'';
-  position:absolute; inset:0;
+  content:''; position:absolute; inset:0;
   background:
     radial-gradient(ellipse 60% 50% at 70% 40%, rgba(201,168,76,.08) 0%, transparent 70%),
     radial-gradient(ellipse 40% 60% at 20% 70%, rgba(15,37,87,.4) 0%, transparent 60%);
@@ -68,29 +80,23 @@ h1,h2,h3,.font-heading { font-family: 'Poppins', sans-serif; }
   background-size: 48px 48px;
 }
 .hero-stat {
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 12px;
-  padding: 16px 20px;
-  text-align: center;
-  backdrop-filter: blur(8px);
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px; padding: 16px 20px; text-align: center; backdrop-filter: blur(8px);
+}
+.trust-badge {
+  display:inline-flex; align-items:center; gap:7px;
+  background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.14);
+  border-radius:999px; padding:7px 16px;
+  font-size:.78rem; color:rgba(255,255,255,.8); backdrop-filter:blur(8px);
 }
 
-/* ── PARTNERS SECTION ── */
+/* ── PARTNERS ── */
 .partners-section {
-  background: #f8fafc;
-  border-top: 1px solid #e8ecf2;
-  border-bottom: 1px solid #e8ecf2;
-  padding: 36px 0;
+  background: #f8fafc; border-top: 1px solid #e8ecf2; border-bottom: 1px solid #e8ecf2; padding: 36px 0;
 }
 .partners-label {
-  text-align: center;
-  font-size: .72rem;
-  font-weight: 700;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: #94a3b8;
-  margin-bottom: 28px;
+  text-align: center; font-size: .72rem; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: #94a3b8; margin-bottom: 28px;
 }
 .partners-track-wrap {
   overflow: hidden;
@@ -98,77 +104,33 @@ h1,h2,h3,.font-heading { font-family: 'Poppins', sans-serif; }
   mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
 }
 .partners-track {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  width: max-content;
-  animation: marquee 22s linear infinite;
+  display: flex; align-items: center; gap: 28px;
+  width: max-content; animation: marquee 22s linear infinite;
 }
 .partners-track:hover { animation-play-state: paused; }
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .partner-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  height: 64px;
-  padding: 10px 22px;
-  background: white;
-  border-radius: 14px;
-  border: 1.5px solid #e2e8f0;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  height: 64px; padding: 10px 22px; background: white;
+  border-radius: 14px; border: 1.5px solid #e2e8f0;
   box-shadow: 0 2px 12px rgba(0,0,0,.06);
-  transition: box-shadow .25s, transform .25s, border-color .25s;
-  cursor: default;
+  transition: box-shadow .25s, transform .25s, border-color .25s; cursor: default;
 }
-.partner-logo:hover {
-  box-shadow: 0 8px 28px rgba(0,0,0,.12);
-  transform: translateY(-3px);
-  border-color: #c9a84c55;
-}
+.partner-logo:hover { box-shadow: 0 8px 28px rgba(0,0,0,.12); transform: translateY(-3px); border-color: #c9a84c55; }
 
 /* ── BUTTONS ── */
-.btn-gold {
-  background: linear-gradient(135deg,#C9A84C,#E5C060);
-  color: var(--navy);
-  font-weight: 700;
-  transition: all .22s;
-  border: none;
-}
+.btn-gold { background: linear-gradient(135deg,#C9A84C,#E5C060); color: var(--navy); font-weight: 700; transition: all .22s; border: none; }
 .btn-gold:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(201,168,76,.4); }
-.btn-navy {
-  background: var(--navy);
-  color: white;
-  font-weight: 700;
-  transition: all .22s;
-}
+.btn-navy { background: var(--navy); color: white; font-weight: 700; transition: all .22s; }
 .btn-navy:hover { background: var(--navy-ll); transform:translateY(-2px); box-shadow: 0 8px 24px rgba(10,30,61,.3); }
 
 /* ── INPUTS ── */
-.inp {
-  width:100%; padding:11px 14px;
-  border:2px solid #E5E7EB; border-radius:10px;
-  font-size:14px; transition:border-color .2s, box-shadow .2s;
-  background:white;
-}
+.inp { width:100%; padding:11px 14px; border:2px solid #E5E7EB; border-radius:10px; font-size:14px; transition:border-color .2s, box-shadow .2s; background:white; }
 .inp:focus { outline:none; border-color:#C9A84C; box-shadow:0 0 0 3px rgba(201,168,76,.15); }
-select.inp {
-  appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-  background-repeat:no-repeat; background-position:right 12px center; background-size:16px; padding-right:38px;
-}
+select.inp { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; background-size:16px; padding-right:38px; }
 
 /* ── CODE BOXES ── */
-.code-box {
-  width:38px; height:48px;
-  border:2px solid #D1D5DB; border-radius:8px;
-  text-align:center; font-size:18px; font-weight:700;
-  font-family:'Courier New',monospace;
-  transition:border-color .15s, box-shadow .15s;
-  background:white; color:#0A1E3D; text-transform:uppercase;
-}
+.code-box { width:38px; height:48px; border:2px solid #D1D5DB; border-radius:8px; text-align:center; font-size:18px; font-weight:700; font-family:'Courier New',monospace; transition:border-color .15s, box-shadow .15s; background:white; color:#0A1E3D; text-transform:uppercase; }
 .code-box:focus { outline:none; border-color:#C9A84C; box-shadow:0 0 0 3px rgba(201,168,76,.2); }
 .code-box.filled { border-color:#0A1E3D; background:#F8FAFF; }
 .code-box.masked { color:transparent; text-shadow: 0 0 8px #0A1E3D; }
@@ -187,66 +149,24 @@ select.inp {
 .badge-remboursement { background:#FCE7F3; color:#9D174D; }
 
 /* ── SERVICE CARDS ── */
-.service-card {
-  transition: all .28s cubic-bezier(.4,0,.2,1);
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.service-card::before {
-  content:'';
-  position:absolute; inset:0;
-  background: linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,0));
-  opacity:0; transition:opacity .28s;
-  pointer-events:none;
-}
+.service-card { transition: all .28s cubic-bezier(.4,0,.2,1); cursor: pointer; position: relative; overflow: hidden; }
+.service-card::before { content:''; position:absolute; inset:0; background: linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,0)); opacity:0; transition:opacity .28s; pointer-events:none; }
 .service-card:hover { transform:translateY(-6px); box-shadow:0 24px 48px rgba(0,0,0,.13); }
 .service-card:hover::before { opacity:1; }
 .service-card.selected { border-color:#C9A84C !important; box-shadow:0 0 0 3px rgba(201,168,76,.25); }
-.service-card-icon {
-  width:60px; height:60px; border-radius:16px;
-  display:flex; align-items:center; justify-content:center; margin-bottom:20px;
-}
+.service-card-icon { width:60px; height:60px; border-radius:16px; display:flex; align-items:center; justify-content:center; margin-bottom:20px; }
 
 /* ── STEPS ── */
-.step-card {
-  background:white; border-radius:16px; padding:28px;
-  border:1px solid #F1F5F9;
-  box-shadow:0 2px 16px rgba(0,0,0,.05);
-  position:relative; overflow:hidden;
-  transition: box-shadow .25s, transform .25s;
-}
+.step-card { background:white; border-radius:16px; padding:28px; border:1px solid #F1F5F9; box-shadow:0 2px 16px rgba(0,0,0,.05); position:relative; overflow:hidden; transition: box-shadow .25s, transform .25s; }
 .step-card:hover { box-shadow:0 12px 32px rgba(0,0,0,.1); transform:translateY(-3px); }
-.step-num {
-  font-family:'Poppins',sans-serif;
-  font-size:3.5rem; font-weight:900; line-height:1;
-  position:absolute; right:20px; bottom:12px;
-  opacity:.07; color:var(--navy);
-  user-select:none;
-}
-
-/* ── TRUST BADGES ── */
-.trust-badge {
-  display:inline-flex; align-items:center; gap:7px;
-  background:rgba(255,255,255,.07);
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:999px; padding:7px 16px;
-  font-size:.78rem; color:rgba(255,255,255,.8);
-  backdrop-filter:blur(8px);
-}
+.step-num { font-family:'Poppins',sans-serif; font-size:3.5rem; font-weight:900; line-height:1; position:absolute; right:20px; bottom:12px; opacity:.07; color:var(--navy); user-select:none; }
 
 /* ── ANIMATIONS ── */
 .fade-in { animation:fi .38s cubic-bezier(.4,0,.2,1); }
 @keyframes fi { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
 
-.float-anim { animation: float 5s ease-in-out infinite; }
-@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-
 /* ── FOOTER ── */
-.footer-bg {
-  background: linear-gradient(135deg, #060e22, #0A1E3D);
-  border-top: 1px solid rgba(201,168,76,.2);
-}
+.footer-bg { background: linear-gradient(135deg, #060e22, #0A1E3D); border-top: 1px solid rgba(201,168,76,.2); }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen">
@@ -255,29 +175,26 @@ select.inp {
 <nav class="nav-bar fixed w-full top-0 z-50">
   <div class="max-w-5xl mx-auto px-5 h-16 flex items-center justify-between">
     <button onclick="showView('landing')" class="flex items-center gap-3 group">
-      <div class="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg"
-           style="background:linear-gradient(135deg,#C9A84C,#E5C060)">
-        <svg width="17" height="17" fill="none" stroke="#0A1E3D" stroke-width="2.5" viewBox="0 0 24 24">
-          <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-        </svg>
+      <div class="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg" style="background:linear-gradient(135deg,#C9A84C,#E5C060)">
+        <svg width="17" height="17" fill="none" stroke="#0A1E3D" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
       </div>
-      <span class="text-white font-heading font-bold text-lg tracking-tight">
-        Véri<span style="color:#C9A84C">Code</span>
-      </span>
+      <span class="text-white font-heading font-bold text-lg tracking-tight">Véri<span style="color:#C9A84C">Code</span></span>
     </button>
     <div class="flex items-center gap-1">
       <button onclick="showView('landing')" id="nav-landing"
-        class="text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-white/10 transition-all">
+        class="text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-white/10 transition-all" data-i18n="nav.home">
         Accueil
       </button>
       <button onclick="showView('track')" id="nav-track"
-        class="text-gray-400 text-sm font-medium px-4 py-2 rounded-xl hover:bg-white/10 transition-all">
+        class="text-gray-400 text-sm font-medium px-4 py-2 rounded-xl hover:bg-white/10 transition-all" data-i18n="nav.track">
         Suivre ma demande
       </button>
-      <a href="admin.html"
-         class="ml-1 text-xs text-gray-500 hover:text-yellow-400 transition-colors px-3 py-2 rounded-xl hover:bg-white/5">
-        Admin →
-      </a>
+      <a href="admin.html" class="ml-1 text-xs text-gray-500 hover:text-yellow-400 transition-colors px-3 py-2 rounded-xl hover:bg-white/5">Admin →</a>
+      <div class="lang-switcher ml-2">
+        <button class="lang-btn active" data-lang="fr" onclick="setLang('fr')">FR</button>
+        <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" data-lang="de" onclick="setLang('de')">DE</button>
+      </div>
     </div>
   </div>
 </nav>
@@ -286,45 +203,35 @@ select.inp {
 <section class="hero-bg pt-32 pb-20">
   <div class="hero-grid-overlay"></div>
   <div class="max-w-4xl mx-auto px-5 text-center relative z-10">
-
-    <!-- Status pill -->
     <div class="inline-flex items-center gap-2.5 mb-7">
       <span class="trust-badge">
         <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-        Service disponible 24h/24
+        <span data-i18n="hero.badge1">Service disponible 24h/24</span>
       </span>
       <span class="trust-badge">
         <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Plateforme sécurisée
+        <span data-i18n="hero.badge2">Plateforme sécurisée</span>
       </span>
     </div>
-
-    <!-- Heading -->
-    <h1 class="font-heading font-black text-white mb-4 leading-tight"
-        style="font-size:clamp(2.2rem,5vw,3.5rem)">
-      Vérification &amp;<br>
-      <span style="background:linear-gradient(90deg,#C9A84C,#E5C060);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">
-        Remboursement
-      </span>
+    <h1 class="font-heading font-black text-white mb-4 leading-tight" style="font-size:clamp(2.2rem,5vw,3.5rem)">
+      <span data-i18n="hero.title1">Vérification &amp;</span><br>
+      <span style="background:linear-gradient(90deg,#C9A84C,#E5C060);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text" data-i18n="hero.title2">Remboursement</span>
     </h1>
-    <p class="text-white/60 text-lg max-w-xl mx-auto mb-10 leading-relaxed">
-      Vérifiez vos codes prépayés ou demandez un remboursement en toute sécurité.<br>
-      Résultat rapide, suivi en temps réel.
+    <p class="text-white/60 text-lg max-w-xl mx-auto mb-10 leading-relaxed" data-i18n="hero.desc">
+      Vérifiez vos codes prépayés ou demandez un remboursement en toute sécurité.<br>Résultat rapide, suivi en temps réel.
     </p>
-
-    <!-- Stats -->
     <div class="grid grid-cols-3 gap-4 max-w-lg mx-auto">
       <div class="hero-stat">
         <div class="font-heading font-bold text-2xl text-white mb-1">1 200+</div>
-        <div class="text-white/45 text-xs">Vérifications effectuées</div>
+        <div class="text-white/45 text-xs" data-i18n="hero.stat1">Vérifications effectuées</div>
       </div>
       <div class="hero-stat">
         <div class="font-heading font-bold text-2xl text-white mb-1">&lt; 24h</div>
-        <div class="text-white/45 text-xs">Délai de traitement</div>
+        <div class="text-white/45 text-xs" data-i18n="hero.stat2">Délai de traitement</div>
       </div>
       <div class="hero-stat">
         <div class="font-heading font-bold text-2xl text-white mb-1">4</div>
-        <div class="text-white/45 text-xs">Types de codes</div>
+        <div class="text-white/45 text-xs" data-i18n="hero.stat3">Types de codes</div>
       </div>
     </div>
   </div>
@@ -332,127 +239,27 @@ select.inp {
 
 <!-- ══════════════ PARTNERS ══════════════ -->
 <section class="partners-section">
-  <p class="partners-label">Codes acceptés sur notre plateforme</p>
+  <p class="partners-label" data-i18n="partners.label">Codes acceptés sur notre plateforme</p>
   <div class="partners-track-wrap">
-    <div class="partners-track" id="partnersTrack">
-
-      <!-- ─── Neosurf ─── -->
-      <div class="partner-logo">
-        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
-          <rect width="130" height="44" rx="8" fill="#18A558"/>
-          <path d="M8 34 Q65 6 122 34" stroke="rgba(255,255,255,.18)" stroke-width="2.5" fill="none"/>
-          <text x="65" y="28" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="17" fill="white" text-anchor="middle" letter-spacing=".5">neosurf</text>
-          <text x="65" y="39" font-family="Arial,Helvetica,sans-serif" font-size="7.5" fill="rgba(255,255,255,.55)" text-anchor="middle" letter-spacing="1.5">PRÉPAYÉ</text>
-        </svg>
-      </div>
-
-      <!-- ─── PCS ─── -->
-      <div class="partner-logo">
-        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
-          <rect width="130" height="44" rx="8" fill="#004B9B"/>
-          <rect x="10" y="12" width="24" height="18" rx="3" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8"/>
-          <rect x="10" y="17" width="24" height="5" fill="rgba(255,255,255,.3)"/>
-          <text x="42" y="30" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="21" fill="white">PCS</text>
-          <text x="75" y="40" font-family="Arial,Helvetica,sans-serif" font-size="7" fill="rgba(255,255,255,.5)" letter-spacing=".8">MASTERCARD</text>
-        </svg>
-      </div>
-
-      <!-- ─── Steam ─── -->
-      <div class="partner-logo">
-        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
-          <rect width="130" height="44" rx="8" fill="#1B2838"/>
-          <!-- Steam-like icon -->
-          <circle cx="22" cy="22" r="11" fill="none" stroke="#66C0F4" stroke-width="2"/>
-          <circle cx="22" cy="22" r="5.5" fill="#66C0F4"/>
-          <path d="M14 10 Q18 14 22 10" stroke="#66C0F4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          <path d="M30 10 Q26 14 22 10" stroke="#66C0F4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          <text x="40" y="28" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="18" fill="#C7D5E0" letter-spacing="1">STEAM</text>
-        </svg>
-      </div>
-
-      <!-- ─── Transcash ─── -->
-      <div class="partner-logo">
-        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
-          <rect width="130" height="44" rx="8" fill="#F7941D"/>
-          <path d="M10 22h18M22 14l7 8-7 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          <text x="38" y="29" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="15" fill="white">transcash</text>
-        </svg>
-      </div>
-
-      <!-- ─── Repeat × 2 for seamless loop ─── -->
-
-      <div class="partner-logo">
-        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
-          <rect width="130" height="44" rx="8" fill="#18A558"/>
-          <path d="M8 34 Q65 6 122 34" stroke="rgba(255,255,255,.18)" stroke-width="2.5" fill="none"/>
-          <text x="65" y="28" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="17" fill="white" text-anchor="middle" letter-spacing=".5">neosurf</text>
-          <text x="65" y="39" font-family="Arial,Helvetica,sans-serif" font-size="7.5" fill="rgba(255,255,255,.55)" text-anchor="middle" letter-spacing="1.5">PRÉPAYÉ</text>
-        </svg>
-      </div>
-      <div class="partner-logo">
-        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
-          <rect width="130" height="44" rx="8" fill="#004B9B"/>
-          <rect x="10" y="12" width="24" height="18" rx="3" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8"/>
-          <rect x="10" y="17" width="24" height="5" fill="rgba(255,255,255,.3)"/>
-          <text x="42" y="30" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="21" fill="white">PCS</text>
-          <text x="75" y="40" font-family="Arial,Helvetica,sans-serif" font-size="7" fill="rgba(255,255,255,.5)" letter-spacing=".8">MASTERCARD</text>
-        </svg>
-      </div>
-      <div class="partner-logo">
-        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
-          <rect width="130" height="44" rx="8" fill="#1B2838"/>
-          <circle cx="22" cy="22" r="11" fill="none" stroke="#66C0F4" stroke-width="2"/>
-          <circle cx="22" cy="22" r="5.5" fill="#66C0F4"/>
-          <path d="M14 10 Q18 14 22 10" stroke="#66C0F4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          <path d="M30 10 Q26 14 22 10" stroke="#66C0F4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          <text x="40" y="28" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="18" fill="#C7D5E0" letter-spacing="1">STEAM</text>
-        </svg>
-      </div>
-      <div class="partner-logo">
-        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
-          <rect width="130" height="44" rx="8" fill="#F7941D"/>
-          <path d="M10 22h18M22 14l7 8-7 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          <text x="38" y="29" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="15" fill="white">transcash</text>
-        </svg>
-      </div>
-
-      <!-- ─── Repeat × 3 ─── -->
-
-      <div class="partner-logo">
-        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
-          <rect width="130" height="44" rx="8" fill="#18A558"/>
-          <path d="M8 34 Q65 6 122 34" stroke="rgba(255,255,255,.18)" stroke-width="2.5" fill="none"/>
-          <text x="65" y="28" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="17" fill="white" text-anchor="middle" letter-spacing=".5">neosurf</text>
-          <text x="65" y="39" font-family="Arial,Helvetica,sans-serif" font-size="7.5" fill="rgba(255,255,255,.55)" text-anchor="middle" letter-spacing="1.5">PRÉPAYÉ</text>
-        </svg>
-      </div>
-      <div class="partner-logo">
-        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
-          <rect width="130" height="44" rx="8" fill="#004B9B"/>
-          <rect x="10" y="12" width="24" height="18" rx="3" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8"/>
-          <rect x="10" y="17" width="24" height="5" fill="rgba(255,255,255,.3)"/>
-          <text x="42" y="30" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="21" fill="white">PCS</text>
-          <text x="75" y="40" font-family="Arial,Helvetica,sans-serif" font-size="7" fill="rgba(255,255,255,.5)" letter-spacing=".8">MASTERCARD</text>
-        </svg>
-      </div>
-      <div class="partner-logo">
-        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
-          <rect width="130" height="44" rx="8" fill="#1B2838"/>
-          <circle cx="22" cy="22" r="11" fill="none" stroke="#66C0F4" stroke-width="2"/>
-          <circle cx="22" cy="22" r="5.5" fill="#66C0F4"/>
-          <path d="M14 10 Q18 14 22 10" stroke="#66C0F4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          <path d="M30 10 Q26 14 22 10" stroke="#66C0F4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          <text x="40" y="28" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="18" fill="#C7D5E0" letter-spacing="1">STEAM</text>
-        </svg>
-      </div>
-      <div class="partner-logo">
-        <svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg">
-          <rect width="130" height="44" rx="8" fill="#F7941D"/>
-          <path d="M10 22h18M22 14l7 8-7 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          <text x="38" y="29" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="15" fill="white">transcash</text>
-        </svg>
-      </div>
-
+    <div class="partners-track">
+      <!-- Neosurf -->
+      <div class="partner-logo"><svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="44" rx="8" fill="#18A558"/><path d="M8 34 Q65 6 122 34" stroke="rgba(255,255,255,.18)" stroke-width="2.5" fill="none"/><text x="65" y="28" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="17" fill="white" text-anchor="middle" letter-spacing=".5">neosurf</text><text x="65" y="39" font-family="Arial,Helvetica,sans-serif" font-size="7.5" fill="rgba(255,255,255,.55)" text-anchor="middle" letter-spacing="1.5">PRÉPAYÉ</text></svg></div>
+      <!-- PCS -->
+      <div class="partner-logo"><svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="44" rx="8" fill="#004B9B"/><rect x="10" y="12" width="24" height="18" rx="3" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8"/><rect x="10" y="17" width="24" height="5" fill="rgba(255,255,255,.3)"/><text x="42" y="30" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="21" fill="white">PCS</text><text x="75" y="40" font-family="Arial,Helvetica,sans-serif" font-size="7" fill="rgba(255,255,255,.5)" letter-spacing=".8">MASTERCARD</text></svg></div>
+      <!-- Steam -->
+      <div class="partner-logo"><svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="44" rx="8" fill="#1B2838"/><circle cx="22" cy="22" r="11" fill="none" stroke="#66C0F4" stroke-width="2"/><circle cx="22" cy="22" r="5.5" fill="#66C0F4"/><path d="M14 10 Q18 14 22 10" stroke="#66C0F4" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M30 10 Q26 14 22 10" stroke="#66C0F4" stroke-width="1.5" fill="none" stroke-linecap="round"/><text x="40" y="28" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="18" fill="#C7D5E0" letter-spacing="1">STEAM</text></svg></div>
+      <!-- Transcash -->
+      <div class="partner-logo"><svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="44" rx="8" fill="#F7941D"/><path d="M10 22h18M22 14l7 8-7 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><text x="38" y="29" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="15" fill="white">transcash</text></svg></div>
+      <!-- Repeat ×2 -->
+      <div class="partner-logo"><svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="44" rx="8" fill="#18A558"/><path d="M8 34 Q65 6 122 34" stroke="rgba(255,255,255,.18)" stroke-width="2.5" fill="none"/><text x="65" y="28" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="17" fill="white" text-anchor="middle" letter-spacing=".5">neosurf</text><text x="65" y="39" font-family="Arial,Helvetica,sans-serif" font-size="7.5" fill="rgba(255,255,255,.55)" text-anchor="middle" letter-spacing="1.5">PRÉPAYÉ</text></svg></div>
+      <div class="partner-logo"><svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="44" rx="8" fill="#004B9B"/><rect x="10" y="12" width="24" height="18" rx="3" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8"/><rect x="10" y="17" width="24" height="5" fill="rgba(255,255,255,.3)"/><text x="42" y="30" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="21" fill="white">PCS</text><text x="75" y="40" font-family="Arial,Helvetica,sans-serif" font-size="7" fill="rgba(255,255,255,.5)" letter-spacing=".8">MASTERCARD</text></svg></div>
+      <div class="partner-logo"><svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="44" rx="8" fill="#1B2838"/><circle cx="22" cy="22" r="11" fill="none" stroke="#66C0F4" stroke-width="2"/><circle cx="22" cy="22" r="5.5" fill="#66C0F4"/><path d="M14 10 Q18 14 22 10" stroke="#66C0F4" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M30 10 Q26 14 22 10" stroke="#66C0F4" stroke-width="1.5" fill="none" stroke-linecap="round"/><text x="40" y="28" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="18" fill="#C7D5E0" letter-spacing="1">STEAM</text></svg></div>
+      <div class="partner-logo"><svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="44" rx="8" fill="#F7941D"/><path d="M10 22h18M22 14l7 8-7 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><text x="38" y="29" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="15" fill="white">transcash</text></svg></div>
+      <!-- Repeat ×3 -->
+      <div class="partner-logo"><svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="44" rx="8" fill="#18A558"/><path d="M8 34 Q65 6 122 34" stroke="rgba(255,255,255,.18)" stroke-width="2.5" fill="none"/><text x="65" y="28" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="17" fill="white" text-anchor="middle" letter-spacing=".5">neosurf</text><text x="65" y="39" font-family="Arial,Helvetica,sans-serif" font-size="7.5" fill="rgba(255,255,255,.55)" text-anchor="middle" letter-spacing="1.5">PRÉPAYÉ</text></svg></div>
+      <div class="partner-logo"><svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="44" rx="8" fill="#004B9B"/><rect x="10" y="12" width="24" height="18" rx="3" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.8"/><rect x="10" y="17" width="24" height="5" fill="rgba(255,255,255,.3)"/><text x="42" y="30" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="21" fill="white">PCS</text><text x="75" y="40" font-family="Arial,Helvetica,sans-serif" font-size="7" fill="rgba(255,255,255,.5)" letter-spacing=".8">MASTERCARD</text></svg></div>
+      <div class="partner-logo"><svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="44" rx="8" fill="#1B2838"/><circle cx="22" cy="22" r="11" fill="none" stroke="#66C0F4" stroke-width="2"/><circle cx="22" cy="22" r="5.5" fill="#66C0F4"/><path d="M14 10 Q18 14 22 10" stroke="#66C0F4" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M30 10 Q26 14 22 10" stroke="#66C0F4" stroke-width="1.5" fill="none" stroke-linecap="round"/><text x="40" y="28" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="18" fill="#C7D5E0" letter-spacing="1">STEAM</text></svg></div>
+      <div class="partner-logo"><svg width="130" height="44" viewBox="0 0 130 44" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="44" rx="8" fill="#F7941D"/><path d="M10 22h18M22 14l7 8-7 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><text x="38" y="29" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="15" fill="white">transcash</text></svg></div>
     </div>
   </div>
 </section>
@@ -462,118 +269,85 @@ select.inp {
 
   <!-- ── LANDING ── -->
   <div id="view-landing" class="fade-in">
-
-    <p class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-8">
-      Que souhaitez-vous faire ?
-    </p>
-
-    <!-- Service cards -->
+    <p class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-8" data-i18n="landing.q">Que souhaitez-vous faire ?</p>
     <div class="grid md:grid-cols-2 gap-6 mb-14">
 
       <!-- Vérification -->
-      <div class="service-card bg-white rounded-2xl p-8 border-2 border-slate-100 shadow-md"
-           onclick="startService('verification')">
+      <div class="service-card bg-white rounded-2xl p-8 border-2 border-slate-100 shadow-md" onclick="startService('verification')">
         <div class="service-card-icon" style="background:linear-gradient(135deg,rgba(201,168,76,.14),rgba(229,192,96,.07))">
-          <svg width="28" height="28" fill="none" stroke="#C9A84C" stroke-width="2" viewBox="0 0 24 24">
-            <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-          </svg>
+          <svg width="28" height="28" fill="none" stroke="#C9A84C" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
         </div>
-        <h2 class="font-heading font-bold text-xl mb-2" style="color:#0A1E3D">Vérification de code</h2>
-        <p class="text-slate-400 text-sm mb-7 leading-relaxed">
-          Vérifiez la validité de votre code prépayé (Transcash, Neosurf, PCS, Steam). Résultat sous 24h.
-        </p>
+        <h2 class="font-heading font-bold text-xl mb-2" style="color:#0A1E3D" data-i18n="verif.title">Vérification de code</h2>
+        <p class="text-slate-400 text-sm mb-7 leading-relaxed" data-i18n="verif.desc">Vérifiez la validité de votre code prépayé (Transcash, Neosurf, PCS, Steam). Résultat sous 24h.</p>
         <div class="flex items-center justify-between mb-5">
           <span class="text-xs text-slate-400 flex items-center gap-1.5">
             <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-            Résultat sous 24h
+            <span data-i18n="verif.delay">Résultat sous 24h</span>
           </span>
-          <span class="text-xs font-semibold px-3 py-1 rounded-full" style="background:rgba(201,168,76,.12);color:#A8893A">Gratuit</span>
+          <span class="text-xs font-semibold px-3 py-1 rounded-full" style="background:rgba(201,168,76,.12);color:#A8893A" data-i18n="verif.free">Gratuit</span>
         </div>
         <button class="btn-gold w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2">
           <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          Vérifier mon code
+          <span data-i18n="verif.btn">Vérifier mon code</span>
         </button>
       </div>
 
       <!-- Remboursement -->
-      <div class="service-card bg-white rounded-2xl p-8 border-2 border-slate-100 shadow-md"
-           onclick="startService('remboursement')">
+      <div class="service-card bg-white rounded-2xl p-8 border-2 border-slate-100 shadow-md" onclick="startService('remboursement')">
         <div class="service-card-icon" style="background:linear-gradient(135deg,rgba(10,30,61,.08),rgba(22,46,104,.04))">
-          <svg width="28" height="28" fill="none" stroke="#0A1E3D" stroke-width="2" viewBox="0 0 24 24">
-            <path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
-          </svg>
+          <svg width="28" height="28" fill="none" stroke="#0A1E3D" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
         </div>
-        <h2 class="font-heading font-bold text-xl mb-2" style="color:#0A1E3D">Remboursement</h2>
-        <p class="text-slate-400 text-sm mb-7 leading-relaxed">
-          Demandez le remboursement d'un code non fonctionnel ou déjà utilisé. Notre équipe traite votre dossier.
-        </p>
+        <h2 class="font-heading font-bold text-xl mb-2" style="color:#0A1E3D" data-i18n="refund.title">Remboursement</h2>
+        <p class="text-slate-400 text-sm mb-7 leading-relaxed" data-i18n="refund.desc">Demandez le remboursement d'un code non fonctionnel ou déjà utilisé. Notre équipe traite votre dossier.</p>
         <div class="flex items-center justify-between mb-5">
           <span class="text-xs text-slate-400 flex items-center gap-1.5">
             <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Traitement sécurisé
+            <span data-i18n="refund.secure">Traitement sécurisé</span>
           </span>
-          <span class="text-xs font-semibold px-3 py-1 rounded-full" style="background:rgba(10,30,61,.08);color:#0A1E3D">Suivi dossier</span>
+          <span class="text-xs font-semibold px-3 py-1 rounded-full" style="background:rgba(10,30,61,.08);color:#0A1E3D" data-i18n="refund.tracking">Suivi dossier</span>
         </div>
         <button class="btn-navy w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2">
           <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
-          Demander un remboursement
+          <span data-i18n="refund.btn">Demander un remboursement</span>
         </button>
       </div>
     </div>
 
     <!-- How it works -->
     <div class="mb-3">
-      <p class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-8">
-        Comment ça fonctionne ?
-      </p>
+      <p class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-8" data-i18n="how.title">Comment ça fonctionne ?</p>
       <div class="grid md:grid-cols-2 gap-5">
-
         <div class="step-card">
           <div class="step-num">1</div>
-          <div class="w-11 h-11 rounded-2xl flex items-center justify-center mb-5"
-               style="background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(229,192,96,.08))">
-            <svg width="20" height="20" fill="none" stroke="#C9A84C" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-            </svg>
+          <div class="w-11 h-11 rounded-2xl flex items-center justify-center mb-5" style="background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(229,192,96,.08))">
+            <svg width="20" height="20" fill="none" stroke="#C9A84C" stroke-width="2" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
           </div>
-          <h4 class="font-heading font-bold text-slate-800 mb-2">Soumettez votre demande</h4>
-          <p class="text-slate-400 text-sm leading-relaxed">
-            Choisissez le service, renseignez vos informations et saisissez votre code. Un numéro de dossier unique vous est attribué instantanément.
-          </p>
+          <h4 class="font-heading font-bold text-slate-800 mb-2" data-i18n="how.step1.title">Soumettez votre demande</h4>
+          <p class="text-slate-400 text-sm leading-relaxed" data-i18n="how.step1.desc">Choisissez le service, renseignez vos informations et saisissez votre code. Un numéro de dossier unique vous est attribué instantanément.</p>
         </div>
-
         <div class="step-card">
           <div class="step-num">2</div>
-          <div class="w-11 h-11 rounded-2xl flex items-center justify-center mb-5"
-               style="background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(16,185,129,.05))">
-            <svg width="20" height="20" fill="none" stroke="#059669" stroke-width="2" viewBox="0 0 24 24">
-              <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
-            </svg>
+          <div class="w-11 h-11 rounded-2xl flex items-center justify-center mb-5" style="background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(16,185,129,.05))">
+            <svg width="20" height="20" fill="none" stroke="#059669" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
           </div>
-          <h4 class="font-heading font-bold text-slate-800 mb-2">Consultez le résultat</h4>
-          <p class="text-slate-400 text-sm leading-relaxed">
-            Utilisez "Suivre ma demande" avec votre numéro de dossier pour consulter le statut, la décision et les commentaires de notre équipe.
-          </p>
+          <h4 class="font-heading font-bold text-slate-800 mb-2" data-i18n="how.step2.title">Consultez le résultat</h4>
+          <p class="text-slate-400 text-sm leading-relaxed" data-i18n="how.step2.desc">Utilisez "Suivre ma demande" avec votre numéro de dossier pour consulter le statut, la décision et les commentaires de notre équipe.</p>
         </div>
-
       </div>
     </div>
   </div>
 
   <!-- ── FORM ── -->
   <div id="view-form" class="hidden fade-in">
-
     <div class="flex items-center gap-2 mb-6">
-      <button onclick="showView('landing')"
-              class="text-sm text-slate-400 hover:text-slate-700 transition-colors flex items-center gap-1.5 font-medium">
+      <button onclick="showView('landing')" class="text-sm text-slate-400 hover:text-slate-700 transition-colors flex items-center gap-1.5 font-medium">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-        Accueil
+        <span data-i18n="nav.home">Accueil</span>
       </button>
       <svg width="14" height="14" fill="none" stroke="#D1D5DB" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       <span id="breadcrumb-label" class="text-sm font-bold" style="color:#0A1E3D"></span>
     </div>
 
-    <!-- Form card -->
     <div id="form-card" class="bg-white rounded-2xl shadow-xl p-8 border border-slate-100">
       <div class="flex items-center gap-4 mb-8 pb-6 border-b border-slate-100">
         <div id="form-icon" class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"></div>
@@ -582,103 +356,90 @@ select.inp {
           <p id="form-subtitle" class="text-sm text-slate-400 mt-0.5"></p>
         </div>
       </div>
-
       <div class="space-y-5">
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">Nom <span class="text-red-400">*</span></label>
-            <input type="text" id="f-nom" class="inp" placeholder="Votre nom">
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2"><span data-i18n="form.nom">Nom</span> <span class="text-red-400">*</span></label>
+            <input type="text" id="f-nom" class="inp" placeholder="…">
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">Prénom <span class="text-red-400">*</span></label>
-            <input type="text" id="f-prenom" class="inp" placeholder="Votre prénom">
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2"><span data-i18n="form.prenom">Prénom</span> <span class="text-red-400">*</span></label>
+            <input type="text" id="f-prenom" class="inp" placeholder="…">
           </div>
         </div>
-
         <div>
           <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">Email <span class="text-red-400">*</span></label>
           <input type="email" id="f-email" class="inp" placeholder="votre@email.com">
         </div>
-
         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">Type de code <span class="text-red-400">*</span></label>
+          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2"><span data-i18n="form.type">Type de code</span> <span class="text-red-400">*</span></label>
           <select id="f-type" class="inp" onchange="onTypeChange()">
-            <option value="">Sélectionnez un type…</option>
+            <option value="" data-i18n="form.type.placeholder">Sélectionnez un type…</option>
           </select>
         </div>
-
         <div id="ticket-count-section" class="hidden">
           <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-3">
-            Nombre de tickets <span class="text-red-400">*</span>
-            <span class="text-slate-400 font-normal normal-case tracking-normal ml-1">(max. 7)</span>
+            <span data-i18n="form.tickets">Nombre de tickets</span> <span class="text-red-400">*</span>
+            <span class="text-slate-400 font-normal normal-case tracking-normal ml-1" data-i18n="form.tickets.max">(max. 7)</span>
           </label>
           <div class="flex flex-wrap gap-2 mb-1" id="count-buttons"></div>
         </div>
-
         <div id="code-section" class="hidden">
           <div class="mb-3">
             <label class="text-xs font-bold text-slate-600 uppercase tracking-wide">
-              Code(s) <span class="text-red-400">*</span>
+              <span data-i18n="form.codes">Code(s)</span> <span class="text-red-400">*</span>
               <span id="code-format-hint" class="text-xs font-normal text-slate-400 ml-2 normal-case tracking-normal"></span>
             </label>
           </div>
           <div id="code-inputs" class="space-y-2.5"></div>
         </div>
-
         <div id="refund-fields" class="hidden space-y-5">
           <div class="h-px bg-slate-100"></div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">Montant du remboursement (€)</label>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2" data-i18n="form.amount">Montant du remboursement (€)</label>
             <input type="text" id="f-montant" class="inp" placeholder="Ex : 50">
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">Motif de la demande</label>
-            <textarea id="f-motif" class="inp h-24 resize-none" placeholder="Décrivez la raison de votre demande de remboursement…"></textarea>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2" data-i18n="form.reason">Motif de la demande</label>
+            <textarea id="f-motif" class="inp h-24 resize-none" id="f-motif-ta" data-i18n-placeholder="form.reason.placeholder" placeholder="Décrivez la raison de votre demande de remboursement…"></textarea>
           </div>
         </div>
-
         <div id="form-error" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm flex items-start gap-2.5">
           <svg class="shrink-0 mt-0.5" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           <span></span>
         </div>
-
-        <button onclick="submitForm()" id="submit-btn"
-          class="btn-gold w-full py-4 rounded-xl text-base font-bold shadow-lg flex items-center justify-center gap-2">
+        <button onclick="submitForm()" id="submit-btn" class="btn-gold w-full py-4 rounded-xl text-base font-bold shadow-lg flex items-center justify-center gap-2">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          Envoyer la demande
+          <span data-i18n="form.submit">Envoyer la demande</span>
         </button>
-
         <p class="text-center text-xs text-slate-400">
-          Déjà soumis une demande ?
-          <button onclick="showView('track')" class="font-semibold hover:underline" style="color:#C9A84C">Suivre ma demande →</button>
+          <span data-i18n="form.already">Déjà soumis une demande ?</span>
+          <button onclick="showView('track')" class="font-semibold hover:underline ml-1" style="color:#C9A84C" data-i18n="form.already.link">Suivre ma demande →</button>
         </p>
       </div>
     </div>
 
-    <!-- Success card -->
+    <!-- Success -->
     <div id="success-card" class="hidden bg-white rounded-2xl shadow-xl p-8 border border-emerald-100 fade-in">
       <div class="text-center">
-        <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
-             style="background:linear-gradient(135deg,#dcfce7,#bbf7d0)">
-          <svg width="36" height="36" fill="none" stroke="#059669" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-          </svg>
+        <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0)">
+          <svg width="36" height="36" fill="none" stroke="#059669" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
         </div>
-        <h2 class="font-heading font-bold text-2xl mb-2" style="color:#0A1E3D">Demande enregistrée !</h2>
-        <p class="text-slate-400 mb-7">Conservez précieusement ce numéro de dossier.</p>
+        <h2 class="font-heading font-bold text-2xl mb-2" style="color:#0A1E3D" data-i18n="success.title">Demande enregistrée !</h2>
+        <p class="text-slate-400 mb-7" data-i18n="success.sub">Conservez précieusement ce numéro de dossier.</p>
         <div class="rounded-2xl p-7 mb-6" style="background:linear-gradient(135deg,#0A1E3D,#0F2557)">
-          <p class="text-white/40 text-xs uppercase tracking-widest mb-2">Numéro de dossier</p>
+          <p class="text-white/40 text-xs uppercase tracking-widest mb-2" data-i18n="success.label">Numéro de dossier</p>
           <p id="success-dossier" class="text-3xl font-extrabold tracking-widest font-mono" style="color:#C9A84C"></p>
         </div>
         <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-left">
           <div class="flex gap-2.5">
             <svg class="shrink-0 mt-0.5 text-amber-500" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <p class="text-sm text-amber-800">Notre équipe traitera votre demande dans les meilleurs délais. Revenez consulter le statut avec votre numéro de dossier.</p>
+            <p class="text-sm text-amber-800" data-i18n="success.info">Notre équipe traitera votre demande dans les meilleurs délais. Revenez consulter le statut avec votre numéro de dossier.</p>
           </div>
         </div>
         <div class="flex gap-3">
-          <button onclick="goTrack()" class="btn-gold flex-1 py-3.5 rounded-xl font-bold text-sm">Suivre ma demande →</button>
-          <button onclick="resetForm()" class="flex-1 py-3.5 rounded-xl border-2 border-slate-200 font-semibold text-slate-600 hover:bg-slate-50 transition-colors text-sm">Nouvelle demande</button>
+          <button onclick="goTrack()" class="btn-gold flex-1 py-3.5 rounded-xl font-bold text-sm" data-i18n="success.track">Suivre ma demande →</button>
+          <button onclick="resetForm()" class="flex-1 py-3.5 rounded-xl border-2 border-slate-200 font-semibold text-slate-600 hover:bg-slate-50 transition-colors text-sm" data-i18n="success.new">Nouvelle demande</button>
         </div>
       </div>
     </div>
@@ -687,50 +448,41 @@ select.inp {
   <!-- ── TRACK ── -->
   <div id="view-track" class="hidden fade-in">
     <div class="flex items-center gap-2 mb-6">
-      <button onclick="showView('landing')"
-              class="text-sm text-slate-400 hover:text-slate-700 transition-colors flex items-center gap-1.5 font-medium">
+      <button onclick="showView('landing')" class="text-sm text-slate-400 hover:text-slate-700 transition-colors flex items-center gap-1.5 font-medium">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-        Accueil
+        <span data-i18n="nav.home">Accueil</span>
       </button>
       <svg width="14" height="14" fill="none" stroke="#D1D5DB" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-      <span class="text-sm font-bold" style="color:#0A1E3D">Suivre ma demande</span>
+      <span class="text-sm font-bold" style="color:#0A1E3D" data-i18n="nav.track">Suivre ma demande</span>
     </div>
-
     <div class="bg-white rounded-2xl shadow-xl p-8 border border-slate-100">
       <div class="flex items-center gap-4 mb-7 pb-6 border-b border-slate-100">
-        <div class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
-             style="background:linear-gradient(135deg,rgba(10,30,61,.08),rgba(10,30,61,.04))">
-          <svg width="22" height="22" fill="none" stroke="#0A1E3D" stroke-width="2" viewBox="0 0 24 24">
-            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
-          </svg>
+        <div class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,rgba(10,30,61,.08),rgba(10,30,61,.04))">
+          <svg width="22" height="22" fill="none" stroke="#0A1E3D" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
         </div>
         <div>
-          <h2 class="font-heading font-bold text-xl" style="color:#0A1E3D">Suivre ma demande</h2>
-          <p class="text-sm text-slate-400 mt-0.5">Entrez votre numéro de dossier</p>
+          <h2 class="font-heading font-bold text-xl" style="color:#0A1E3D" data-i18n="nav.track">Suivre ma demande</h2>
+          <p class="text-sm text-slate-400 mt-0.5" data-i18n="track.sub">Entrez votre numéro de dossier</p>
         </div>
       </div>
       <div class="space-y-4">
-        <input type="text" id="track-input" class="inp font-mono uppercase tracking-widest text-lg"
-          placeholder="VS-XXXXXXXX" maxlength="11"
-          oninput="this.value=this.value.toUpperCase()"
-          onkeydown="if(event.key==='Enter') trackCode()">
+        <input type="text" id="track-input" class="inp font-mono uppercase tracking-widest text-lg" placeholder="VS-XXXXXXXX" maxlength="11" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter') trackCode()">
         <div id="track-error" class="hidden bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm flex items-center gap-2">
           <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
           <span></span>
         </div>
         <button onclick="trackCode()" class="btn-gold w-full py-4 rounded-xl text-base font-bold shadow-lg flex items-center justify-center gap-2">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          Rechercher
+          <span data-i18n="track.btn">Rechercher</span>
         </button>
       </div>
     </div>
-
     <div id="track-result" class="hidden mt-5 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden fade-in">
       <div class="p-6 border-b border-slate-100">
         <div class="flex items-start justify-between gap-3 flex-wrap">
           <div>
             <div id="r-service-badge" class="mb-2"></div>
-            <p class="text-xs text-slate-400 uppercase tracking-wider mt-2">Numéro de dossier</p>
+            <p class="text-xs text-slate-400 uppercase tracking-wider mt-2" data-i18n="track.dossier">Numéro de dossier</p>
             <p id="r-dossier" class="font-mono font-bold text-xl mt-0.5" style="color:#0A1E3D"></p>
           </div>
           <div id="r-status-badge"></div>
@@ -739,24 +491,24 @@ select.inp {
       <div class="p-6">
         <div class="grid grid-cols-2 gap-3 mb-4">
           <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
-            <p class="text-xs text-slate-400 mb-1">Nom</p>
+            <p class="text-xs text-slate-400 mb-1" data-i18n="track.nom">Nom</p>
             <p id="r-nom" class="font-semibold text-sm" style="color:#0A1E3D"></p>
           </div>
           <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
-            <p class="text-xs text-slate-400 mb-1">Prénom</p>
+            <p class="text-xs text-slate-400 mb-1" data-i18n="track.prenom">Prénom</p>
             <p id="r-prenom" class="font-semibold text-sm" style="color:#0A1E3D"></p>
           </div>
           <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
-            <p class="text-xs text-slate-400 mb-1">Type de code</p>
+            <p class="text-xs text-slate-400 mb-1" data-i18n="track.type">Type de code</p>
             <p id="r-type" class="font-semibold text-sm" style="color:#0A1E3D"></p>
           </div>
           <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
-            <p class="text-xs text-slate-400 mb-1">Soumis le</p>
+            <p class="text-xs text-slate-400 mb-1" data-i18n="track.date">Soumis le</p>
             <p id="r-date" class="font-semibold text-sm" style="color:#0A1E3D"></p>
           </div>
         </div>
         <div id="r-comment-block" class="hidden bg-blue-50 border border-blue-100 rounded-xl p-4">
-          <p class="text-xs text-blue-500 font-bold uppercase tracking-wide mb-1">Commentaire</p>
+          <p class="text-xs text-blue-500 font-bold uppercase tracking-wide mb-1" data-i18n="track.comment">Commentaire</p>
           <p id="r-comment" class="text-sm text-blue-900 font-medium"></p>
         </div>
       </div>
@@ -770,23 +522,178 @@ select.inp {
   <div class="max-w-5xl mx-auto px-5">
     <div class="flex flex-col md:flex-row items-center justify-between gap-5">
       <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg flex items-center justify-center"
-             style="background:linear-gradient(135deg,#C9A84C,#E5C060)">
-          <svg width="14" height="14" fill="none" stroke="#0A1E3D" stroke-width="2.5" viewBox="0 0 24 24">
-            <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-          </svg>
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#C9A84C,#E5C060)">
+          <svg width="14" height="14" fill="none" stroke="#0A1E3D" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
         </div>
         <span class="font-heading font-bold text-lg">Véri<span style="color:#C9A84C">Code</span></span>
       </div>
-      <p class="text-white/35 text-sm">© 2025 VériCode — Plateforme de vérification &amp; remboursement</p>
-      <a href="admin.html" class="text-white/25 text-xs hover:text-yellow-400 transition-colors">
-        Espace administrateur →
-      </a>
+      <p class="text-white/35 text-sm" data-i18n="footer.copy">© 2025 VériCode — Plateforme de vérification &amp; remboursement</p>
+      <a href="admin.html" class="text-white/25 text-xs hover:text-yellow-400 transition-colors" data-i18n="footer.admin">Espace administrateur →</a>
     </div>
   </div>
 </footer>
 
 <script>
+/* ══════════════ TRANSLATIONS ══════════════ */
+const i18n = {
+  fr: {
+    'nav.home':'Accueil', 'nav.track':'Suivre ma demande',
+    'hero.badge1':'Service disponible 24h/24', 'hero.badge2':'Plateforme sécurisée',
+    'hero.title1':'Vérification &amp;', 'hero.title2':'Remboursement',
+    'hero.desc':'Vérifiez vos codes prépayés ou demandez un remboursement en toute sécurité.<br>Résultat rapide, suivi en temps réel.',
+    'hero.stat1':'Vérifications effectuées', 'hero.stat2':'Délai de traitement', 'hero.stat3':'Types de codes',
+    'partners.label':'Codes acceptés sur notre plateforme',
+    'landing.q':'Que souhaitez-vous faire ?',
+    'verif.title':'Vérification de code',
+    'verif.desc':'Vérifiez la validité de votre code prépayé (Transcash, Neosurf, PCS, Steam). Résultat sous 24h.',
+    'verif.delay':'Résultat sous 24h', 'verif.free':'Gratuit', 'verif.btn':'Vérifier mon code',
+    'refund.title':'Remboursement',
+    'refund.desc':"Demandez le remboursement d'un code non fonctionnel ou déjà utilisé. Notre équipe traite votre dossier.",
+    'refund.secure':'Traitement sécurisé', 'refund.tracking':'Suivi dossier', 'refund.btn':'Demander un remboursement',
+    'how.title':'Comment ça fonctionne ?',
+    'how.step1.title':'Soumettez votre demande',
+    'how.step1.desc':"Choisissez le service, renseignez vos informations et saisissez votre code. Un numéro de dossier unique vous est attribué instantanément.",
+    'how.step2.title':'Consultez le résultat',
+    'how.step2.desc':'Utilisez "Suivre ma demande" avec votre numéro de dossier pour consulter le statut, la décision et les commentaires de notre équipe.',
+    'form.nom':'Nom', 'form.prenom':'Prénom', 'form.type':'Type de code',
+    'form.type.placeholder':'Sélectionnez un type…',
+    'form.tickets':'Nombre de tickets', 'form.tickets.max':'(max. 7)', 'form.codes':'Code(s)',
+    'form.amount':'Montant du remboursement (€)', 'form.reason':'Motif de la demande',
+    'form.reason.placeholder':'Décrivez la raison de votre demande de remboursement…',
+    'form.submit':'Envoyer la demande',
+    'form.already':'Déjà soumis une demande ?', 'form.already.link':'Suivre ma demande →',
+    'form.verif.breadcrumb':'Vérification de code', 'form.refund.breadcrumb':'Remboursement',
+    'form.verif.title':'Vérification de code', 'form.verif.sub':'Renseignez vos informations pour vérifier votre code',
+    'form.refund.title':'Demande de remboursement', 'form.refund.sub':'Renseignez vos informations et décrivez votre demande',
+    'form.sending':'Envoi en cours…',
+    'success.title':'Demande enregistrée !', 'success.sub':'Conservez précieusement ce numéro de dossier.',
+    'success.label':'Numéro de dossier',
+    'success.info':'Notre équipe traitera votre demande dans les meilleurs délais. Revenez consulter le statut avec votre numéro de dossier.',
+    'success.track':'Suivre ma demande →', 'success.new':'Nouvelle demande',
+    'track.sub':'Entrez votre numéro de dossier', 'track.btn':'Rechercher',
+    'track.dossier':'Numéro de dossier', 'track.nom':'Nom', 'track.prenom':'Prénom',
+    'track.type':'Type de code', 'track.date':'Soumis le', 'track.comment':'Commentaire',
+    'footer.copy':'© 2025 VériCode — Plateforme de vérification &amp; remboursement',
+    'footer.admin':'Espace administrateur →',
+    'status.pending':'En attente', 'status.processing':'Vérification en cours', 'status.valid':'Valide',
+    'status.invalid':'Invalide', 'status.used':'Déjà utilisé', 'status.expired':'Expiré', 'status.completed':'Traitement terminé',
+    'badge.verif':'✓ Vérification', 'badge.refund':'↩ Remboursement',
+    'err.nom':'Veuillez saisir votre nom.', 'err.prenom':'Veuillez saisir votre prénom.',
+    'err.email':'Veuillez saisir un email valide.', 'err.type':'Veuillez sélectionner un type de code.',
+    'err.code':'Veuillez saisir au moins un code.',
+    'err.dossier':'Veuillez saisir un numéro de dossier.', 'err.notfound':'Dossier introuvable.',
+    'err.network':'Erreur de connexion. Réessayez.',
+  },
+  en: {
+    'nav.home':'Home', 'nav.track':'Track my request',
+    'hero.badge1':'Service available 24/7', 'hero.badge2':'Secure platform',
+    'hero.title1':'Verification &amp;', 'hero.title2':'Refund',
+    'hero.desc':'Verify your prepaid codes or request a refund safely.<br>Fast results, real-time tracking.',
+    'hero.stat1':'Verifications done', 'hero.stat2':'Processing time', 'hero.stat3':'Code types',
+    'partners.label':'Codes accepted on our platform',
+    'landing.q':'What would you like to do?',
+    'verif.title':'Code Verification',
+    'verif.desc':'Check the validity of your prepaid code (Transcash, Neosurf, PCS, Steam). Result within 24h.',
+    'verif.delay':'Result within 24h', 'verif.free':'Free', 'verif.btn':'Verify my code',
+    'refund.title':'Refund',
+    'refund.desc':'Request a refund for a non-functional or already used code. Our team will process your case.',
+    'refund.secure':'Secure processing', 'refund.tracking':'Case tracking', 'refund.btn':'Request a refund',
+    'how.title':'How does it work?',
+    'how.step1.title':'Submit your request',
+    'how.step1.desc':'Choose the service, fill in your information and enter your code. A unique case number is assigned instantly.',
+    'how.step2.title':'Check the result',
+    'how.step2.desc':'Use "Track my request" with your case number to view the status, decision and comments from our team.',
+    'form.nom':'Last name', 'form.prenom':'First name', 'form.type':'Code type',
+    'form.type.placeholder':'Select a type…',
+    'form.tickets':'Number of tickets', 'form.tickets.max':'(max. 7)', 'form.codes':'Code(s)',
+    'form.amount':'Refund amount (€)', 'form.reason':'Reason for request',
+    'form.reason.placeholder':'Describe the reason for your refund request…',
+    'form.submit':'Submit request',
+    'form.already':'Already submitted a request?', 'form.already.link':'Track my request →',
+    'form.verif.breadcrumb':'Code Verification', 'form.refund.breadcrumb':'Refund',
+    'form.verif.title':'Code Verification', 'form.verif.sub':'Enter your details to verify your code',
+    'form.refund.title':'Refund Request', 'form.refund.sub':'Enter your details and describe your request',
+    'form.sending':'Sending…',
+    'success.title':'Request submitted!', 'success.sub':'Keep this case number safe.',
+    'success.label':'Case number',
+    'success.info':'Our team will process your request as soon as possible. Come back to check the status with your case number.',
+    'success.track':'Track my request →', 'success.new':'New request',
+    'track.sub':'Enter your case number', 'track.btn':'Search',
+    'track.dossier':'Case number', 'track.nom':'Last name', 'track.prenom':'First name',
+    'track.type':'Code type', 'track.date':'Submitted on', 'track.comment':'Comment',
+    'footer.copy':'© 2025 VériCode — Verification &amp; refund platform',
+    'footer.admin':'Admin area →',
+    'status.pending':'Pending', 'status.processing':'Verification in progress', 'status.valid':'Valid',
+    'status.invalid':'Invalid', 'status.used':'Already used', 'status.expired':'Expired', 'status.completed':'Processing complete',
+    'badge.verif':'✓ Verification', 'badge.refund':'↩ Refund',
+    'err.nom':'Please enter your last name.', 'err.prenom':'Please enter your first name.',
+    'err.email':'Please enter a valid email.', 'err.type':'Please select a code type.',
+    'err.code':'Please enter at least one code.',
+    'err.dossier':'Please enter a case number.', 'err.notfound':'Case not found.',
+    'err.network':'Connection error. Please try again.',
+  },
+  de: {
+    'nav.home':'Startseite', 'nav.track':'Anfrage verfolgen',
+    'hero.badge1':'Service rund um die Uhr', 'hero.badge2':'Sichere Plattform',
+    'hero.title1':'Überprüfung &amp;', 'hero.title2':'Erstattung',
+    'hero.desc':'Überprüfen Sie Ihre Prepaid-Codes oder beantragen Sie sicher eine Erstattung.<br>Schnelle Ergebnisse, Echtzeit-Verfolgung.',
+    'hero.stat1':'Überprüfungen durchgeführt', 'hero.stat2':'Bearbeitungszeit', 'hero.stat3':'Code-Typen',
+    'partners.label':'Auf unserer Plattform akzeptierte Codes',
+    'landing.q':'Was möchten Sie tun?',
+    'verif.title':'Code-Überprüfung',
+    'verif.desc':'Überprüfen Sie die Gültigkeit Ihres Prepaid-Codes (Transcash, Neosurf, PCS, Steam). Ergebnis innerhalb von 24 Std.',
+    'verif.delay':'Ergebnis innerhalb von 24 Std.', 'verif.free':'Kostenlos', 'verif.btn':'Meinen Code prüfen',
+    'refund.title':'Erstattung',
+    'refund.desc':'Beantragen Sie eine Erstattung für einen nicht funktionierenden oder bereits verwendeten Code. Unser Team bearbeitet Ihren Fall.',
+    'refund.secure':'Sichere Bearbeitung', 'refund.tracking':'Fallverfolgung', 'refund.btn':'Erstattung beantragen',
+    'how.title':'Wie funktioniert es?',
+    'how.step1.title':'Anfrage einreichen',
+    'how.step1.desc':'Wählen Sie den Service, geben Sie Ihre Daten ein und tragen Sie Ihren Code ein. Eine eindeutige Fallnummer wird sofort vergeben.',
+    'how.step2.title':'Ergebnis abrufen',
+    'how.step2.desc':'Nutzen Sie "Anfrage verfolgen" mit Ihrer Fallnummer, um den Status, die Entscheidung und Kommentare unseres Teams einzusehen.',
+    'form.nom':'Nachname', 'form.prenom':'Vorname', 'form.type':'Code-Typ',
+    'form.type.placeholder':'Typ auswählen…',
+    'form.tickets':'Anzahl der Tickets', 'form.tickets.max':'(max. 7)', 'form.codes':'Code(s)',
+    'form.amount':'Erstattungsbetrag (€)', 'form.reason':'Grund der Anfrage',
+    'form.reason.placeholder':'Beschreiben Sie den Grund Ihrer Erstattungsanfrage…',
+    'form.submit':'Anfrage absenden',
+    'form.already':'Bereits eine Anfrage eingereicht?', 'form.already.link':'Anfrage verfolgen →',
+    'form.verif.breadcrumb':'Code-Überprüfung', 'form.refund.breadcrumb':'Erstattung',
+    'form.verif.title':'Code-Überprüfung', 'form.verif.sub':'Geben Sie Ihre Daten ein, um Ihren Code zu überprüfen',
+    'form.refund.title':'Erstattungsantrag', 'form.refund.sub':'Geben Sie Ihre Daten ein und beschreiben Sie Ihre Anfrage',
+    'form.sending':'Wird gesendet…',
+    'success.title':'Anfrage eingegangen!', 'success.sub':'Bewahren Sie diese Fallnummer sorgfältig auf.',
+    'success.label':'Fallnummer',
+    'success.info':'Unser Team wird Ihre Anfrage so bald wie möglich bearbeiten. Prüfen Sie den Status mit Ihrer Fallnummer.',
+    'success.track':'Anfrage verfolgen →', 'success.new':'Neue Anfrage',
+    'track.sub':'Geben Sie Ihre Fallnummer ein', 'track.btn':'Suchen',
+    'track.dossier':'Fallnummer', 'track.nom':'Nachname', 'track.prenom':'Vorname',
+    'track.type':'Code-Typ', 'track.date':'Eingereicht am', 'track.comment':'Kommentar',
+    'footer.copy':'© 2025 VériCode — Überprüfungs- &amp; Erstattungsplattform',
+    'footer.admin':'Administratorbereich →',
+    'status.pending':'Ausstehend', 'status.processing':'Überprüfung läuft', 'status.valid':'Gültig',
+    'status.invalid':'Ungültig', 'status.used':'Bereits verwendet', 'status.expired':'Abgelaufen', 'status.completed':'Bearbeitung abgeschlossen',
+    'badge.verif':'✓ Überprüfung', 'badge.refund':'↩ Erstattung',
+    'err.nom':'Bitte geben Sie Ihren Nachnamen ein.', 'err.prenom':'Bitte geben Sie Ihren Vornamen ein.',
+    'err.email':'Bitte geben Sie eine gültige E-Mail ein.', 'err.type':'Bitte wählen Sie einen Code-Typ.',
+    'err.code':'Bitte geben Sie mindestens einen Code ein.',
+    'err.dossier':'Bitte geben Sie eine Fallnummer ein.', 'err.notfound':'Fall nicht gefunden.',
+    'err.network':'Verbindungsfehler. Bitte erneut versuchen.',
+  }
+};
+
+let currentLang = localStorage.getItem('vc-lang') || 'fr';
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('vc-lang', lang);
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (i18n[lang][key] !== undefined) el.innerHTML = i18n[lang][key];
+  });
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+}
+
 /* ══════════════ CONFIG ══════════════ */
 const CODE_CONFIG = {
   'Transcash': { length: 12, numeric: true,  hint: '12 chiffres' },
@@ -795,10 +702,6 @@ const CODE_CONFIG = {
   'STEAM':     { length: 15, numeric: false, hint: '15 caractères alphanumériques' }
 };
 
-const STATUS_LABELS = {
-  pending:'En attente', processing:'Vérification en cours', valid:'Valide',
-  invalid:'Invalide', used:'Déjà utilisé', expired:'Expiré', completed:'Traitement terminé'
-};
 const STATUS_ICONS = { pending:'⏳', processing:'🔍', valid:'✅', invalid:'❌', used:'⚠️', expired:'🕒', completed:'✔️' };
 
 /* ══════════════ STATE ══════════════ */
@@ -822,8 +725,9 @@ function showView(v) {
 function startService(service) {
   currentService = service;
   const isRefund = service === 'remboursement';
+  const t = i18n[currentLang];
 
-  document.getElementById('breadcrumb-label').textContent = isRefund ? 'Remboursement' : 'Vérification de code';
+  document.getElementById('breadcrumb-label').textContent = isRefund ? t['form.refund.breadcrumb'] : t['form.verif.breadcrumb'];
 
   const icon = document.getElementById('form-icon');
   icon.style.background = isRefund ? 'rgba(10,30,61,0.08)' : 'rgba(201,168,76,0.12)';
@@ -831,10 +735,8 @@ function startService(service) {
     ? `<svg width="22" height="22" fill="none" stroke="#0A1E3D" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>`
     : `<svg width="22" height="22" fill="none" stroke="#C9A84C" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>`;
 
-  document.getElementById('form-title').textContent = isRefund ? 'Demande de remboursement' : 'Vérification de code';
-  document.getElementById('form-subtitle').textContent = isRefund
-    ? 'Renseignez vos informations et décrivez votre demande'
-    : 'Renseignez vos informations pour vérifier votre code';
+  document.getElementById('form-title').textContent = isRefund ? t['form.refund.title'] : t['form.verif.title'];
+  document.getElementById('form-subtitle').textContent = isRefund ? t['form.refund.sub'] : t['form.verif.sub'];
 
   document.getElementById('refund-fields').classList.toggle('hidden', !isRefund);
   document.getElementById('form-card').classList.remove('hidden');
@@ -848,12 +750,10 @@ async function loadTypes() {
   try {
     const { types } = await (await fetch('/api/code-types')).json();
     const sel = document.getElementById('f-type');
-    sel.innerHTML = '<option value="">Sélectionnez un type…</option>';
+    sel.innerHTML = `<option value="">${i18n[currentLang]['form.type.placeholder']}</option>`;
     types.forEach(t => {
       const o = document.createElement('option');
-      o.value = t.id;
-      o.dataset.name = t.name;
-      o.textContent = t.name;
+      o.value = t.id; o.dataset.name = t.name; o.textContent = t.name;
       sel.appendChild(o);
     });
   } catch {}
@@ -864,9 +764,9 @@ function onTypeChange() {
   const sel = document.getElementById('f-type');
   const opt = sel.options[sel.selectedIndex];
   currentTypeName = opt?.dataset?.name || '';
-  const config      = CODE_CONFIG[currentTypeName];
-  const countSec    = document.getElementById('ticket-count-section');
-  const codeSec     = document.getElementById('code-section');
+  const config   = CODE_CONFIG[currentTypeName];
+  const countSec = document.getElementById('ticket-count-section');
+  const codeSec  = document.getElementById('code-section');
 
   if (!config) { countSec.classList.add('hidden'); codeSec.classList.add('hidden'); return; }
 
@@ -883,8 +783,7 @@ function renderCountButtons() {
   container.innerHTML = '';
   for (let i = 1; i <= 7; i++) {
     const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.textContent = i;
+    btn.type = 'button'; btn.textContent = i;
     btn.className = i === ticketCount
       ? 'w-10 h-10 rounded-xl font-bold text-sm btn-gold'
       : 'w-10 h-10 rounded-xl font-bold text-sm border-2 border-gray-200 text-gray-600 hover:border-gray-400 transition-colors';
@@ -893,11 +792,7 @@ function renderCountButtons() {
   }
 }
 
-function onCountChange(n) {
-  ticketCount = n;
-  renderCountButtons();
-  renderCodeInputs(n);
-}
+function onCountChange(n) { ticketCount = n; renderCountButtons(); renderCodeInputs(n); }
 
 function renderCodeInputs(n) {
   const config    = CODE_CONFIG[currentTypeName];
@@ -907,41 +802,31 @@ function renderCodeInputs(n) {
   for (let i = 0; i < n; i++) {
     const row = document.createElement('div');
     row.className = 'flex items-center gap-3';
-
     const num = document.createElement('span');
     num.className = 'text-xs font-bold text-gray-400 w-5 shrink-0 text-right';
     num.textContent = n > 1 ? `${i + 1}.` : '';
-
     const inp = document.createElement('input');
-    inp.type         = 'text';
-    inp.className    = 'code-single-inp inp font-mono tracking-widest text-base flex-1';
-    inp.placeholder  = `Entrez votre code (${config ? config.hint : '···'})`;
-    inp.maxLength    = config ? config.length : 30;
-    inp.autocomplete = 'off';
-    inp.value        = existing[i] || '';
+    inp.type = 'text'; inp.className = 'code-single-inp inp font-mono tracking-widest text-base flex-1';
+    inp.placeholder = `${i18n[currentLang]['form.codes']} (${config ? config.hint : '···'})`;
+    inp.maxLength = config ? config.length : 30; inp.autocomplete = 'off'; inp.value = existing[i] || '';
     if (config?.numeric) inp.inputMode = 'numeric';
     inp.addEventListener('input', () => {
       let v = inp.value.toUpperCase();
-      if (config?.numeric) v = v.replace(/\D/g, '');
-      else v = v.replace(/[^A-Z0-9]/g, '');
+      if (config?.numeric) v = v.replace(/\D/g, ''); else v = v.replace(/[^A-Z0-9]/g, '');
       inp.value = v.slice(0, config?.length ?? 30);
     });
-
-    row.appendChild(num);
-    row.appendChild(inp);
-    container.appendChild(row);
+    row.appendChild(num); row.appendChild(inp); container.appendChild(row);
   }
   container.querySelector('.code-single-inp')?.focus();
 }
 
 function getCodes() {
-  return [...document.querySelectorAll('.code-single-inp')]
-    .map(i => i.value.trim().toUpperCase())
-    .filter(Boolean);
+  return [...document.querySelectorAll('.code-single-inp')].map(i => i.value.trim().toUpperCase()).filter(Boolean);
 }
 
 /* ══════════════ SUBMIT ══════════════ */
 async function submitForm() {
+  const t      = i18n[currentLang];
   const nom    = document.getElementById('f-nom').value.trim();
   const prenom = document.getElementById('f-prenom').value.trim();
   const email  = document.getElementById('f-email').value.trim();
@@ -950,58 +835,44 @@ async function submitForm() {
   const codes  = getCodes();
   const errEl  = document.getElementById('form-error');
   errEl.classList.add('hidden');
-
   const config = CODE_CONFIG[currentTypeName];
 
-  if (!nom)    { showErr(errEl, 'Veuillez saisir votre nom.'); return; }
-  if (!prenom) { showErr(errEl, 'Veuillez saisir votre prénom.'); return; }
-  if (!email || !email.includes('@')) { showErr(errEl, 'Veuillez saisir un email valide.'); return; }
-  if (!typeId) { showErr(errEl, 'Veuillez sélectionner un type de code.'); return; }
-  if (codes.length === 0) { showErr(errEl, 'Veuillez saisir au moins un code.'); return; }
+  if (!nom)    { showErr(errEl, t['err.nom']); return; }
+  if (!prenom) { showErr(errEl, t['err.prenom']); return; }
+  if (!email || !email.includes('@')) { showErr(errEl, t['err.email']); return; }
+  if (!typeId) { showErr(errEl, t['err.type']); return; }
+  if (codes.length === 0) { showErr(errEl, t['err.code']); return; }
   if (config) {
     const badCode = codes.find(c => c.length !== config.length);
-    if (badCode) {
-      showErr(errEl, `Code invalide : "${badCode}" — ${currentTypeName} requiert exactement ${config.length} caractères.`);
-      return;
-    }
+    if (badCode) { showErr(errEl, `Code invalide : "${badCode}" — ${currentTypeName} requiert exactement ${config.length} caractères.`); return; }
   }
 
-  const body = {
-    service_type: currentService,
-    code_type_id: +typeId,
-    code: codes.join(', '), nom, prenom, email
-  };
+  const body = { service_type: currentService, code_type_id: +typeId, code: codes.join(', '), nom, prenom, email };
   if (currentService === 'remboursement') {
     body.montant = document.getElementById('f-montant').value.trim() || null;
     body.motif   = document.getElementById('f-motif').value.trim() || null;
   }
 
   const btn = document.getElementById('submit-btn');
-  btn.disabled = true; btn.textContent = 'Envoi en cours…';
+  btn.disabled = true; btn.querySelector('span').textContent = t['form.sending'];
   try {
     const res  = await fetch('/api/submit', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
     const data = await res.json();
-    if (!res.ok) { showErr(errEl, data.error || 'Erreur lors de la soumission.'); return; }
+    if (!res.ok) { showErr(errEl, data.error || t['err.network']); return; }
     lastDossier = data.dossier;
     document.getElementById('success-dossier').textContent = data.dossier;
     document.getElementById('form-card').classList.add('hidden');
     document.getElementById('success-card').classList.remove('hidden');
-  } catch { showErr(errEl, 'Erreur de connexion. Réessayez.'); }
-  finally { btn.disabled = false; btn.textContent = 'Envoyer la demande'; }
+  } catch { showErr(errEl, t['err.network']); }
+  finally { btn.disabled = false; btn.querySelector('span').textContent = t['form.submit']; }
 }
 
-function showErr(el, msg) {
-  el.querySelector('span').textContent = msg;
-  el.classList.remove('hidden');
-}
+function showErr(el, msg) { el.querySelector('span').textContent = msg; el.classList.remove('hidden'); }
 
 function resetForm() {
-  document.getElementById('f-nom').value = '';
-  document.getElementById('f-prenom').value = '';
-  document.getElementById('f-email').value = '';
+  ['f-nom','f-prenom','f-email','f-montant'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  const motif = document.getElementById('f-motif'); if(motif) motif.value='';
   document.getElementById('f-type').value = '';
-  document.getElementById('f-montant').value = '';
-  document.getElementById('f-motif').value = '';
   document.getElementById('code-inputs').innerHTML = '';
   document.getElementById('code-section').classList.add('hidden');
   document.getElementById('ticket-count-section').classList.add('hidden');
@@ -1019,25 +890,25 @@ function goTrack() {
 
 /* ══════════════ TRACK ══════════════ */
 async function trackCode() {
+  const t       = i18n[currentLang];
   const dossier = document.getElementById('track-input').value.trim().toUpperCase();
   const errEl   = document.getElementById('track-error');
   const result  = document.getElementById('track-result');
-  errEl.classList.add('hidden');
-  result.classList.add('hidden');
-  if (!dossier) { showErr(errEl, 'Veuillez saisir un numéro de dossier.'); return; }
+  errEl.classList.add('hidden'); result.classList.add('hidden');
+  if (!dossier) { showErr(errEl, t['err.dossier']); return; }
 
   try {
     const res  = await fetch('/api/track/' + encodeURIComponent(dossier));
     const data = await res.json();
-    if (!res.ok) { showErr(errEl, data.error || 'Dossier introuvable.'); return; }
+    if (!res.ok) { showErr(errEl, data.error || t['err.notfound']); return; }
     const s = data.submission;
     const isRefund = s.service_type === 'remboursement';
 
     document.getElementById('r-service-badge').innerHTML = isRefund
-      ? '<span class="badge badge-remboursement">↩ Remboursement</span>'
-      : '<span class="badge badge-verification">✓ Vérification</span>';
-    document.getElementById('r-dossier').textContent   = s.dossier_number;
-    document.getElementById('r-status-badge').innerHTML = `<span class="badge badge-${s.status}">${STATUS_ICONS[s.status]||''} ${STATUS_LABELS[s.status]||s.status}</span>`;
+      ? `<span class="badge badge-remboursement">${t['badge.refund']}</span>`
+      : `<span class="badge badge-verification">${t['badge.verif']}</span>`;
+    document.getElementById('r-dossier').textContent = s.dossier_number;
+    document.getElementById('r-status-badge').innerHTML = `<span class="badge badge-${s.status}">${STATUS_ICONS[s.status]||''} ${t['status.'+s.status]||s.status}</span>`;
     document.getElementById('r-nom').textContent    = s.nom || '—';
     document.getElementById('r-prenom').textContent = s.prenom || '—';
     document.getElementById('r-type').textContent   = s.code_type_name || '—';
@@ -1046,16 +917,19 @@ async function trackCode() {
     if (s.admin_comment) { document.getElementById('r-comment').textContent = s.admin_comment; cb.classList.remove('hidden'); }
     else cb.classList.add('hidden');
     result.classList.remove('hidden');
-  } catch { showErr(errEl, 'Erreur de connexion. Réessayez.'); }
+  } catch { showErr(errEl, t['err.network']); }
 }
 
 function fmt(dt) {
   if (!dt) return '—';
-  return new Date(dt).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  return new Date(dt).toLocaleDateString(currentLang === 'fr' ? 'fr-FR' : currentLang === 'de' ? 'de-DE' : 'en-GB',
+    {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
 }
 
 /* ══════════════ INIT ══════════════ */
 loadTypes();
+if (currentLang !== 'fr') setLang(currentLang);
+else document.querySelectorAll('.lang-btn[data-lang="fr"]').forEach(b => b.classList.add('active'));
 </script>
 </body>
 </html>
